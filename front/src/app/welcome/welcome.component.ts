@@ -15,10 +15,7 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getUtilisateur()
-      .subscribe(utilisateur => {
-          console.log(utilisateur);
-          this.utilisateur = utilisateur;
-      })
+      .subscribe(utilisateur => this.utilisateur = utilisateur)
   }
 
 }
