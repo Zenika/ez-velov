@@ -7,15 +7,15 @@ import java.util.List;
 @Service
 public class UtilisateurService {
 
-    private UtilisateurRepository utilisateurRepository;
+    private IResquestUtilisateurStore iResquestUtilisateurStore;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
+    public UtilisateurService(IResquestUtilisateurStore iResquestUtilisateurStore) {
+        this.iResquestUtilisateurStore = iResquestUtilisateurStore;
     }
 
     public Utilisateur getUtilisateur() {
-        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
-        if (utilisateurs.isEmpty()) {
+        List<Utilisateur> utilisateurs = iResquestUtilisateurStore.findAll();
+        if (utilisateurs == null || utilisateurs.isEmpty()) {
             return new Utilisateur("Mister", "Nobody", null);
         } else {
             return utilisateurs.get(0);
