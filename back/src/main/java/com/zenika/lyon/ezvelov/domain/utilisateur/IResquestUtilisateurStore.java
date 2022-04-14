@@ -2,7 +2,7 @@ package com.zenika.lyon.ezvelov.domain.utilisateur;
 
 import java.util.List;
 
-public interface UtilisateurRepository {
+public interface IResquestUtilisateurStore {
 
     List<Utilisateur> findAll();
 }

@@ -1,14 +1,14 @@
 package com.zenika.lyon.ezvelov.infrastructure.utilisateur;
 
 import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
-import com.zenika.lyon.ezvelov.domain.utilisateur.UtilisateurRepository;
+import com.zenika.lyon.ezvelov.domain.utilisateur.IResquestUtilisateurStore;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class UtilisateurStore implements UtilisateurRepository {
+public class UtilisateurStore implements IResquestUtilisateurStore {
 
     private final UtilisateurJpaRepository utilisateurJpaRepository;
     private final UtilisateurEntityMapper utilisateurEntityMapper;
