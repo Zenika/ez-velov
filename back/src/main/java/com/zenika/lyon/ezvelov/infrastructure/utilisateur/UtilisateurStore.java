@@ -1,7 +1,7 @@
 package com.zenika.lyon.ezvelov.infrastructure.utilisateur;
 
-import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
 import com.zenika.lyon.ezvelov.domain.utilisateur.IResquestUtilisateurStore;
+import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -22,11 +22,8 @@ public class UtilisateurStore implements IResquestUtilisateurStore {
     public List<Utilisateur> findAll() {
         List<UtilisateurEntity> utilisateurEntities = utilisateurJpaRepository.findAll();
 
-        List<Utilisateur> utilisateurs = new ArrayList<>();
-        for (int i = 0; i < utilisateurEntities.size(); i++) {
-            utilisateurs.set(i, utilisateurEntityMapper.utilisateurEntityToUtilisateur(utilisateurEntities.get(i)));
-        }
-
-        return utilisateurs;
+        return utilisateurEntities.stream()
+                .map(utilisateurEntityMapper::utilisateurEntityToUtilisateur)
+                .toList();
     }
 }
