@@ -1,10 +1,9 @@
-package com.zenika.lyon.ezvelov.infrastructure.utilisateur;
+package com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur;
 
 import com.zenika.lyon.ezvelov.domain.utilisateur.IResquestUtilisateurStore;
 import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
