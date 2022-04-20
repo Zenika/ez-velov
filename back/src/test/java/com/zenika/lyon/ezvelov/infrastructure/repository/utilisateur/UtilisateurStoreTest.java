@@ -1,7 +1,10 @@
-package com.zenika.lyon.ezvelov.infrastructure.utilisateur;
+package com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur;
 
 
-import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
+import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurEntity;
+import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurEntityMapper;
+import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurJpaRepository;
+import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurStore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

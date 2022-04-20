@@ -1,4 +1,4 @@
-package com.zenika.lyon.ezvelov.infrastructure.utilisateur;
+package com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
