@@ -1,12 +1,12 @@
 package com.zenika.lyon.ezvelov.infrastructure.provider.station;
 
 import com.zenika.lyon.ezvelov.domain.station.IRequestStationStore;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@Profile("!test")
 public class StationProvider implements IRequestStationStore {
 
     private final RestTemplate restTemplate;

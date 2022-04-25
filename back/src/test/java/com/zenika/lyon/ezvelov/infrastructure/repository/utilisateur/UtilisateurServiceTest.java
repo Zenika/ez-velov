@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,9 +23,8 @@ public class UtilisateurServiceTest {
     @Mock
     public IResquestUtilisateurStore iResquestUtilisateurStore;
 
-
     @Test
-    public void getUtilisateur_ShouldReturnNobody_WhenFindAllIsEmpty(){
+    public void getUtilisateur_ShouldReturnNobody_WhenFindAllIsEmpty() {
         // given
         Utilisateur nobody = new Utilisateur("Mister", "Nobody", null);
         //when
@@ -34,7 +34,7 @@ public class UtilisateurServiceTest {
     }
 
     @Test
-    public void getUtilisateur_shouldReturnFirstElement_WhenFindAllIsNotEmpty(){
+    public void getUtilisateur_shouldReturnFirstElement_WhenFindAllIsNotEmpty() {
         //given
         Utilisateur connue = new Utilisateur("Mister", "Michel", null);
         Utilisateur connue2 = new Utilisateur("Mister2", "Michel2", null);
@@ -49,7 +49,7 @@ public class UtilisateurServiceTest {
     }
 
     @Test
-    public void getUtilisateur_shouldReturnNobody_WhenFindAllReturnNull(){
+    public void getUtilisateur_shouldReturnNobody_WhenFindAllReturnNull() {
         //given
         Utilisateur nobody = new Utilisateur("Mister", "Nobody", null);
         when(iResquestUtilisateurStore.findAll()).thenReturn(null);
