@@ -6,9 +6,11 @@ import {WelcomeComponent} from './welcome/welcome.component';
 import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import { StationComponent } from './station/station.component';
+import {MapComponent} from "./map/map.component";
 
 @NgModule({
   declarations: [
+    MapComponent,
     AppComponent,
     WelcomeComponent,
     StationComponent,
