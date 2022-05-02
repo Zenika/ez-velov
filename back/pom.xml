@@ -20,6 +20,7 @@
         <spring-boot.version>2.6.6</spring-boot.version>
         <postgresql.version>42.3.3</postgresql.version>
         <jaxb.version>2.4.0-b180830.0359</jaxb.version>
+        <liquibase.version>4.9.1</liquibase.version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,11 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
     </dependencies>
 
