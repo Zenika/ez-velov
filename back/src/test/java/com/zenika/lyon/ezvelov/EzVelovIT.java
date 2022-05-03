@@ -6,10 +6,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class EzVelovIT {
+public class EzVelovIT {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
 }
