@@ -1,7 +1,6 @@
 package com.zenika.lyon.ezvelov;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +20,7 @@ import javax.annotation.PostConstruct;
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @ActiveProfiles("test")
-public class EzVelovIT {
+public abstract class EzVelovIT {
 
     @Autowired
     protected RestTemplate restTemplate;
@@ -34,10 +33,6 @@ public class EzVelovIT {
     @PostConstruct
     private void initUri() {
         uri = "http://localhost:" + port;
-    }
-
-    @Test
-    public void contextLoads() {
     }
 
 }
