@@ -3,18 +3,18 @@ package com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur;
 import com.zenika.lyon.ezvelov.domain.utilisateur.IResquestUtilisateurStore;
 import com.zenika.lyon.ezvelov.domain.utilisateur.Utilisateur;
 import com.zenika.lyon.ezvelov.domain.utilisateur.UtilisateurService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UtilisateurServiceTest {
 
     @InjectMocks
