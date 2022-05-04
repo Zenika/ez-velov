@@ -5,7 +5,6 @@ import {AppComponent} from './app.component';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
-import { StationComponent } from './station/station.component';
 import {MapComponent} from "./map/map.component";
 
 @NgModule({
@@ -13,7 +12,6 @@ import {MapComponent} from "./map/map.component";
     MapComponent,
     AppComponent,
     WelcomeComponent,
-    StationComponent,
   ],
   imports: [
     BrowserModule,
