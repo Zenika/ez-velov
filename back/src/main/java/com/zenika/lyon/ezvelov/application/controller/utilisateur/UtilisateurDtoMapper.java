@@ -11,6 +11,6 @@ public class UtilisateurDtoMapper {
     }
 
     Utilisateur UtilisateurDtoToUtilisateur(UtilisateurDto utilisateurDto) {
-        return new Utilisateur(utilisateurDto.getNom(), utilisateurDto.getPrenom(), null);
+        return new Utilisateur(utilisateurDto.nom(), utilisateurDto.prenom(), null);
     }
 }
