@@ -2,6 +2,8 @@ package com.zenika.lyon.ezvelov.domain.station;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StationService {
 
@@ -11,7 +13,7 @@ public class StationService {
         this.iRequestStationStore = iRequestStationStore;
     }
 
-    public String getAllStations() {
+    public List<Station> getAllStations() {
         return iRequestStationStore.getAllStations();
     }
 }

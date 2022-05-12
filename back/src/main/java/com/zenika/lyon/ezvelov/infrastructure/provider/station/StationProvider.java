@@ -1,12 +1,16 @@
 package com.zenika.lyon.ezvelov.infrastructure.provider.station;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zenika.lyon.ezvelov.domain.station.IRequestStationStore;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zenika.lyon.ezvelov.domain.station.Station;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Profile("!test")
@@ -20,10 +24,16 @@ public class StationProvider implements IRequestStationStore {
     public StationProvider(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
     @Override
-    public String getAllStations() {
-        return restTemplate.getForObject(
+    public List<Station> getAllStations() {
+        String strResponse = restTemplate.getForObject(
                 String.format("https://api.jcdecaux.com/vls/v3/stations?contract=lyon&apiKey=%s", jcDecauxToken),
                 String.class);
+
+        Gson gson = new Gson();
+
+        Type stationListType = new TypeToken<ArrayList<Station>>(){}.getType();
+        return gson.fromJson(strResponse, stationListType);
     }
 }

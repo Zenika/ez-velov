@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
+import {StationService} from "../station.service";
+import {Station} from "../station";
 
 @Component({
   selector: 'app-map',
@@ -8,7 +10,9 @@ import * as mapboxgl from "mapbox-gl";
 })
 export class MapComponent implements OnInit {
 
-  constructor() { }
+  public stations?: Station[];
+
+  constructor(private stationService: StationService) { }
 
   ngOnInit(): void {
     let map = new mapboxgl.Map({
@@ -18,5 +22,14 @@ export class MapComponent implements OnInit {
       center: [4.835659, 45.764043],
       zoom: 12
     })
+
+    this.stationService.getAllStations()
+      .subscribe(stations => {
+        this.stations = stations
+        stations.forEach((station) => {
+          const {longitude, latitude} = station?.positionDto;
+          new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
+        })
+      });
   }
 }

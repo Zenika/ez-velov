@@ -1,5 +1,7 @@
 package com.zenika.lyon.ezvelov.domain.station;
 
+import java.util.List;
+
 public interface IRequestStationStore {
-    String getAllStations();
+    List<Station> getAllStations();
 }

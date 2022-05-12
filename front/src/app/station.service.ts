@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {Station} from "./station";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class StationService {
     private httpClient: HttpClient) {
   }
 
-  public getAllStationsbyContract(): Observable<String> {
-    return this.httpClient.get(this.userUrl, {responseType: 'text'});
+  public getAllStations(): Observable<Station[]> {
+    return this.httpClient.get<Station[]>(this.userUrl);
   }
 }
