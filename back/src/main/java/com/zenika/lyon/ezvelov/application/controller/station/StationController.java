@@ -13,9 +13,9 @@ import java.util.List;
 @RequestMapping("/station")
 public class StationController {
 
-    private StationService stationService;
+    private final StationService stationService;
 
-    private StationDtoMapper stationDtoMapper;
+    private final StationDtoMapper stationDtoMapper;
 
     public StationController(StationService stationService, StationDtoMapper stationDtoMapper) {
         this.stationService = stationService;
@@ -25,11 +25,7 @@ public class StationController {
     @GetMapping
     public List<StationDto> getAllStations(){
         List<Station> listStation;
-        List<StationDto> listStationDto = new ArrayList<>();
         listStation = stationService.getAllStations();
-        for (Station station : listStation) {
-            listStationDto.add(stationDtoMapper.stationToStationDto(station));
-        }
-        return listStationDto;
+        return listStation.stream().map(stationDtoMapper::stationToStationDto).toList();
     }
 }

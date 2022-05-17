@@ -1,5 +1,6 @@
 package com.zenika.lyon.ezvelov.application.controller.station;
 
+import com.zenika.lyon.ezvelov.application.controller.position.PositionDtoMapper;
 import com.zenika.lyon.ezvelov.domain.station.Station;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ public class StationDtoMapper {
 
     PositionDtoMapper positionDtoMapper;
 
-    public StationDtoMapper(PositionDtoMapper positionDtoMapper) {
+    StationDtoMapper(PositionDtoMapper positionDtoMapper) {
         this.positionDtoMapper = positionDtoMapper;
     }
 

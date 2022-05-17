@@ -27,13 +27,10 @@ public class StationProvider implements IRequestStationStore {
 
     @Override
     public List<Station> getAllStations() {
-        String strResponse = restTemplate.getForObject(
+        String jsonStations = restTemplate.getForObject(
                 String.format("https://api.jcdecaux.com/vls/v3/stations?contract=lyon&apiKey=%s", jcDecauxToken),
                 String.class);
 
-        Gson gson = new Gson();
-
-        Type stationListType = new TypeToken<ArrayList<Station>>(){}.getType();
-        return gson.fromJson(strResponse, stationListType);
+        return List.of(new Gson().fromJson(jsonStations, Station[].class));
     }
 }

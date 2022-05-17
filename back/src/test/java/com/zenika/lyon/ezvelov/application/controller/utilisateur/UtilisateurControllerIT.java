@@ -4,10 +4,7 @@ import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.zenika.lyon.ezvelov.EzVelovIT;
-import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurEntity;
-import com.zenika.lyon.ezvelov.infrastructure.repository.utilisateur.UtilisateurJpaRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

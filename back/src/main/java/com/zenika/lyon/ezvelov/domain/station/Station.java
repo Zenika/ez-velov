@@ -1,11 +1,15 @@
 package com.zenika.lyon.ezvelov.domain.station;
 
+import com.zenika.lyon.ezvelov.domain.position.Position;
+
 import java.util.Objects;
 
-public class Station {
+public class Station{
+
     private final int number;
 
     private final Position position;
+
 
     public Station(int number, Position position) {
         this.number = number;
@@ -40,4 +44,5 @@ public class Station {
                 ", position=" + position +
                 '}';
     }
+
 }

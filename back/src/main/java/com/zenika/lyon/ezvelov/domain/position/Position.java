@@ -1,11 +1,11 @@
-package com.zenika.lyon.ezvelov.domain.station;
+package com.zenika.lyon.ezvelov.domain.position;
 
 import java.util.Objects;
 
 public class Position {
-    public double longitude;
+    private final double longitude;
 
-    public double latitude;
+    private final double latitude;
 
     public Position(double longitude, double latitude) {
         this.longitude = longitude;
@@ -18,6 +18,14 @@ public class Position {
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
                 '}';
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 
     @Override

@@ -23,6 +23,10 @@ export class MapComponent implements OnInit {
       zoom: 12
     })
 
+    this.addPointsOnMap(map);
+  }
+
+  addPointsOnMap(map: mapboxgl.Map): void{
     this.stationService.getAllStations()
       .subscribe(stations => {
         this.stations = stations
