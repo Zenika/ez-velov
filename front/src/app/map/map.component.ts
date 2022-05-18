@@ -21,7 +21,7 @@ export class MapComponent implements OnInit {
       container: 'map',
       center: [4.835659, 45.764043],
       zoom: 12
-    })
+    });
 
     this.addPointsOnMap(map);
   }

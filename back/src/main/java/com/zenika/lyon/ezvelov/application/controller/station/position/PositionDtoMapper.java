@@ -1,7 +1,7 @@
-package com.zenika.lyon.ezvelov.application.controller.position;
+package com.zenika.lyon.ezvelov.application.controller.station.position;
 
 
-import com.zenika.lyon.ezvelov.domain.position.Position;
+import com.zenika.lyon.ezvelov.domain.station.position.Position;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +12,6 @@ public class PositionDtoMapper {
     }
 
     public PositionDto positionToPositionDto(Position position){
-        return new PositionDto(position.getLongitude(), position.getLatitude());
+        return new PositionDto(position.longitude(), position.latitude());
     }
 }

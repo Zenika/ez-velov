@@ -1,16 +1,30 @@
 package com.zenika.lyon.ezvelov.infrastructure.provider.station;
 
-import com.google.gson.Gson;
-import com.zenika.lyon.ezvelov.domain.position.Position;
+import com.zenika.lyon.ezvelov.domain.station.position.Position;
 import com.zenika.lyon.ezvelov.domain.station.Station;
+import com.zenika.lyon.ezvelov.infrastructure.repository.station.StationEntityMapper;
+import com.zenika.lyon.ezvelov.infrastructure.repository.station.position.PositionEntityMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class StationProviderTest {
+
+    private StationProvider stationProvider;
+
+    @Mock
+    private RestTemplate restTemplate;
+
 
     @Test
     public void getAllStations_should_return_list_of_all_station(){
@@ -139,13 +153,16 @@ public class StationProviderTest {
                     }
                 ]
                 """;
+        stationProvider = new StationProvider(restTemplate, new StationEntityMapper(new PositionEntityMapper()));
+        when(restTemplate.getForObject(anyString(), any())).thenReturn(givenJsonReturn);
+
        List<Station> expectedList = List.of(
                 new Station(2010, new Position(4.815747, 45.743317)),
                 new Station(5015, new Position(4.821662,45.75197)),
                 new Station(32001, new Position(4.832409,45.846034)));
 
         //when
-        List<Station> result = List.of(new Gson().fromJson(givenJsonReturn, Station[].class));
+        List<Station> result = stationProvider.getAllStations();
 
         //then
         assertThat(result).isEqualTo(expectedList);
