@@ -1,13 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-main .background {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: auto;
-  opacity: 0.4;
-}
-main app-root{
-  position: relative;
-  z-index: 2;
+body {
+  background-image: url("./assets/background_App.png");
 }
