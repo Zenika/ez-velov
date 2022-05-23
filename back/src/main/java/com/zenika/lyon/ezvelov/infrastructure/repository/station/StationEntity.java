@@ -38,7 +38,7 @@ public class StationEntity {
     @Override
     public String toString() {
         return "StationEntity{" +
-                "number=" + number +
+                "id=" + number +
                 ", position=" + position +
                 '}';
     }

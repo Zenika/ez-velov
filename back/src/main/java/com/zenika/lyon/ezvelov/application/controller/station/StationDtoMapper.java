@@ -13,11 +13,11 @@ public class StationDtoMapper {
         this.positionDtoMapper = positionDtoMapper;
     }
 
-    StationDto stationToStationDto(Station station){
+    StationDto stationToStationDto(Station station) {
         return new StationDto(positionDtoMapper.positionToPositionDto(station.position()));
     }
 
-    Station stationDtotoStation(StationDto stationDto){
+    Station stationDtotoStation(StationDto stationDto) {
         return new Station(null, positionDtoMapper.positionDtotoPosition(stationDto.positionDto()));
     }
 }

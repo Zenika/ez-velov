@@ -13,11 +13,11 @@ public class StationEntityMapper {
         this.positionEntityMapper = positionEntityMapper;
     }
 
-    public StationEntity stationToStationEntity(Station station){
-        return new StationEntity(station.number(), positionEntityMapper.positionToPositionEntity(station.position()));
+    public StationEntity stationToStationEntity(Station station) {
+        return new StationEntity(station.id(), positionEntityMapper.positionToPositionEntity(station.position()));
     }
 
-    public Station stationEntitytoStation(StationEntity stationEntity){
+    public Station stationEntitytoStation(StationEntity stationEntity) {
         return new Station(stationEntity.getNumber(), positionEntityMapper
                 .positionEntitytoPosition(stationEntity.getPosition()));
     }

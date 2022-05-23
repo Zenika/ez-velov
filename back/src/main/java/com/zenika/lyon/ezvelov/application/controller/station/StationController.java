@@ -1,6 +1,5 @@
 package com.zenika.lyon.ezvelov.application.controller.station;
 
-import com.zenika.lyon.ezvelov.domain.station.Station;
 import com.zenika.lyon.ezvelov.domain.station.StationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +21,8 @@ public class StationController {
     }
 
     @GetMapping
-    public List<StationDto> getAllStations(){
-        List<Station> listStation;
-        listStation = stationService.getAllStations();
-        return listStation.stream()
+    public List<StationDto> getAllStations() {
+        return stationService.getAllStations().stream()
                 .map(stationDtoMapper::stationToStationDto)
                 .toList();
     }

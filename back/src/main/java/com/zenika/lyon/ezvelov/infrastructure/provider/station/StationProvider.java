@@ -34,7 +34,7 @@ public class StationProvider implements IRequestStationStore {
                 String.format("https://api.jcdecaux.com/vls/v3/stations?contract=lyon&apiKey=%s", jcDecauxToken),
                 String.class);
 
-        List<StationEntity> listStationsEntity =  List.of(new Gson().fromJson(jsonStations, StationEntity[].class));
+        List<StationEntity> listStationsEntity = List.of(new Gson().fromJson(jsonStations, StationEntity[].class));
         return listStationsEntity.stream()
                 .map(stationEntityMapper::stationEntitytoStation)
                 .toList();
