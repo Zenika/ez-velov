@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
 import {StationService} from "../station.service";
 import {Station} from "../station";
@@ -12,7 +12,8 @@ export class MapComponent implements OnInit {
 
   public stations?: Station[];
 
-  constructor(private stationService: StationService) { }
+  constructor(private stationService: StationService) {
+  }
 
   ngOnInit(): void {
     let map = new mapboxgl.Map({
@@ -26,13 +27,18 @@ export class MapComponent implements OnInit {
     this.addPointsOnMap(map);
   }
 
-  addPointsOnMap(map: mapboxgl.Map): void{
+  addPointsOnMap(map: mapboxgl.Map): void {
     this.stationService.getAllStations()
       .subscribe(stations => {
         this.stations = stations
         stations.forEach((station) => {
           const {longitude, latitude} = station?.positionDto;
-          new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
+          const {capacity, availabilitiesDto} = station?.totalStandsDto;
+          new mapboxgl.Marker().setLngLat([longitude, latitude]).setPopup(
+            new mapboxgl.Popup({offset: [0, -15]}).setLngLat([longitude, latitude])
+              .setHTML('capacité :' + capacity.toString()
+                + ' places disponibles :' + availabilitiesDto.stands.toString())
+          ).addTo(map)
         })
       });
   }
