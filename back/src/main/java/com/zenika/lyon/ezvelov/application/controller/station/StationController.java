@@ -1,23 +1,29 @@
 package com.zenika.lyon.ezvelov.application.controller.station;
 
 import com.zenika.lyon.ezvelov.domain.station.StationService;
-import com.zenika.lyon.ezvelov.infrastructure.provider.station.StationProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/station")
 public class StationController {
 
-    private StationService stationService;
+    private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    private final StationDtoMapper stationDtoMapper;
+
+    public StationController(StationService stationService, StationDtoMapper stationDtoMapper) {
         this.stationService = stationService;
+        this.stationDtoMapper = stationDtoMapper;
     }
 
     @GetMapping
-    public String getAllStations(){
-        return stationService.getAllStations();
+    public List<StationDto> getAllStations() {
+        return stationService.getAllStations().stream()
+                .map(stationDtoMapper::stationToStationDto)
+                .toList();
     }
 }
