@@ -24,6 +24,9 @@ export class MapComponent implements OnInit {
     });
 
     this.addPointsOnMap(map);
+
+
+    this.locateTheUserOnMap(map);
   }
 
   addPointsOnMap(map: mapboxgl.Map): void{
@@ -35,5 +38,18 @@ export class MapComponent implements OnInit {
           new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
         })
       });
+  }
+
+  locateTheUserOnMap(map: mapboxgl.Map): void {
+    map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+        showAccuracyCircle: true
+      })
+    );
   }
 }
