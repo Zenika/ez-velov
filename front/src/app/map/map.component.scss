@@ -1,6 +1,14 @@
-#map{
+#map {
   height: 95%;
   width: 45%;
   position: absolute;
   left: 8px;
+}
+
+.geocoder {
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+  left: 47%;
+  top: 9em;
 }

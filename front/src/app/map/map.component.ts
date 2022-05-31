@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
 import {StationService} from "../station.service";
 import {Station} from "../station";
@@ -15,7 +15,8 @@ export class MapComponent implements OnInit {
 
   public stations?: Station[];
 
-  constructor(private stationService: StationService) { }
+  constructor(private stationService: StationService) {
+  }
 
   ngOnInit(): void {
     let map = new mapboxgl.Map({
@@ -28,6 +29,10 @@ export class MapComponent implements OnInit {
 
     this.addPointsOnMap(map);
 
+    this.addGeocoderOnMap(map);
+  }
+
+  addGeocoderOnMap(map: mapboxgl.Map): void {
     const geocoder = new MapboxGeocoder({
       accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
       placeholder: 'Recherchez dans Lyon',
@@ -35,7 +40,8 @@ export class MapComponent implements OnInit {
       mapboxgl: map,
       flyTo: true
     });
-    map.addControl(geocoder);
+
+    document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
 
     geocoder.on('result', (event) => {
       let positionRecherche: mapboxgl.Marker;
@@ -46,13 +52,13 @@ export class MapComponent implements OnInit {
     });
   }
 
-  addPointsOnMap(map: mapboxgl.Map): void{
+  addPointsOnMap(map: mapboxgl.Map): void {
     this.stationService.getAllStations()
       .subscribe(stations => {
         this.stations = stations
         stations.forEach((station) => {
           const {longitude, latitude} = station?.positionDto;
-          new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
+          new mapboxgl.Marker().setLngLat([longitude, latitude]).addTo(map)
         })
       });
   }
