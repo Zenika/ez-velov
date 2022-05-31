@@ -36,7 +36,7 @@ export class MapComponent implements OnInit {
           const {capacity, availabilitiesDto} = station?.totalStandsDto;
           new mapboxgl.Marker().setLngLat([longitude, latitude]).setPopup(
             new mapboxgl.Popup({offset: [0, -15]}).setLngLat([longitude, latitude])
-              .setHTML('capacité :' + capacity.toString()
+              .setHTML('capacité :' + capacity.toString() + '<br>'
                 + ' places disponibles :' + availabilitiesDto.stands.toString())
           ).addTo(map)
         })
