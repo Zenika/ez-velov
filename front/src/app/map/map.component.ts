@@ -26,7 +26,7 @@ export class MapComponent implements OnInit {
     this.addPointsOnMap(map);
 
 
-    this.locateTheUserOnMap(map);
+    this.geolocateUser(map);
   }
 
   addPointsOnMap(map: mapboxgl.Map): void{
@@ -40,16 +40,19 @@ export class MapComponent implements OnInit {
       });
   }
 
-  locateTheUserOnMap(map: mapboxgl.Map): void {
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true,
-        showUserHeading: true,
-        showAccuracyCircle: true
-      })
-    );
+  geolocateUser(map: mapboxgl.Map): void {
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+      showUserHeading: true,
+      showAccuracyCircle: true
+    })
+    map.addControl(geolocate);
+    map.on('load', function()
+    {
+      geolocate.trigger();
+    });
   }
 }
