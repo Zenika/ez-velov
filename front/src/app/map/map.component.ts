@@ -36,10 +36,14 @@ export class MapComponent implements OnInit {
           const {capacity, availabilitiesDto} = station?.totalStandsDto;
           new mapboxgl.Marker().setLngLat([longitude, latitude]).setPopup(
             new mapboxgl.Popup({offset: [0, -15]}).setLngLat([longitude, latitude])
-              .setHTML('capacité :' + capacity.toString() + '<br>'
-                + ' places disponibles :' + availabilitiesDto.stands.toString())
+              .setHTML(
+                this.infosStations(capacity, availabilitiesDto.stands))
           ).addTo(map)
         })
       });
+  }
+
+  infosStations(capacity: number, placeDispo: number): string {
+    return 'capacité : ' + capacity + '<br>' + 'places disponibles : ' + placeDispo
   }
 }
