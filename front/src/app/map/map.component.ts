@@ -10,7 +10,9 @@ import {Station} from "../station";
 })
 export class MapComponent implements OnInit {
 
-  public stations?: Station[];
+  private stations?: Station[];
+
+  private geolocator?: mapboxgl.GeolocateControl;
 
   constructor(private stationService: StationService) { }
 
@@ -26,7 +28,9 @@ export class MapComponent implements OnInit {
     this.addPointsOnMap(map);
 
 
-    this.geolocateUser(map);
+    this.geolocator = this.initGeolocate(map);
+
+    this.loadUserGeoloc(this.geolocator, map);
   }
 
   addPointsOnMap(map: mapboxgl.Map): void{
@@ -40,7 +44,7 @@ export class MapComponent implements OnInit {
       });
   }
 
-  geolocateUser(map: mapboxgl.Map): void {
+  initGeolocate(map: mapboxgl.Map): mapboxgl.GeolocateControl {
     const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true,
@@ -50,8 +54,11 @@ export class MapComponent implements OnInit {
       showAccuracyCircle: true
     })
     map.addControl(geolocate);
-    map.on('load', function()
-    {
+    return geolocate;
+  }
+
+  loadUserGeoloc(geolocate: mapboxgl.GeolocateControl, map: mapboxgl.Map): void {
+    map.on('load', function() {
       geolocate.trigger();
     });
   }
