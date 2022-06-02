@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
 import {StationService} from "../station.service";
 import {Station} from "../station";
+import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import {timer} from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -12,7 +15,8 @@ export class MapComponent implements OnInit {
 
   public stations?: Station[];
 
-  constructor(private stationService: StationService) { }
+  constructor(private stationService: StationService) {
+  }
 
   ngOnInit(): void {
     let map = new mapboxgl.Map({
@@ -24,15 +28,37 @@ export class MapComponent implements OnInit {
     });
 
     this.addPointsOnMap(map);
+
+    this.addGeocoderOnMap(map);
   }
 
-  addPointsOnMap(map: mapboxgl.Map): void{
+  addGeocoderOnMap(map: mapboxgl.Map): void {
+    const geocoder = new MapboxGeocoder({
+      accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
+      placeholder: 'Recherchez dans Lyon',
+      marker: false,
+      mapboxgl: map,
+      flyTo: true
+    });
+
+    document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
+
+    geocoder.on('result', (event) => {
+      let positionRecherche: mapboxgl.Marker;
+      timer(3000).subscribe(x => {
+        positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
+        positionRecherche.addTo(map)
+      })
+    });
+  }
+
+  addPointsOnMap(map: mapboxgl.Map): void {
     this.stationService.getAllStations()
       .subscribe(stations => {
         this.stations = stations
         stations.forEach((station) => {
           const {longitude, latitude} = station?.positionDto;
-          new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
+          new mapboxgl.Marker().setLngLat([longitude, latitude]).addTo(map)
         })
       });
   }
