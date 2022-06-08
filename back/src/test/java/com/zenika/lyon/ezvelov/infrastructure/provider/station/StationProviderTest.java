@@ -1,9 +1,13 @@
 package com.zenika.lyon.ezvelov.infrastructure.provider.station;
 
-import com.zenika.lyon.ezvelov.domain.station.position.Position;
 import com.zenika.lyon.ezvelov.domain.station.Station;
+import com.zenika.lyon.ezvelov.domain.station.position.Position;
+import com.zenika.lyon.ezvelov.domain.station.totalStands.TotalStands;
+import com.zenika.lyon.ezvelov.domain.station.totalStands.availabilities.Availabilities;
 import com.zenika.lyon.ezvelov.infrastructure.repository.station.StationEntityMapper;
 import com.zenika.lyon.ezvelov.infrastructure.repository.station.position.PositionEntityMapper;
+import com.zenika.lyon.ezvelov.infrastructure.repository.station.totalStands.TotalStandsEntityMapper;
+import com.zenika.lyon.ezvelov.infrastructure.repository.station.totalStands.availabilities.AvailabilitiesEntityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,7 +31,7 @@ public class StationProviderTest {
 
 
     @Test
-    public void getAllStations_should_return_list_of_all_station(){
+    public void getAllStations_should_return_list_of_all_station() {
         //given
         String givenJsonReturn = """
                 [
@@ -153,13 +157,17 @@ public class StationProviderTest {
                     }
                 ]
                 """;
-        stationProvider = new StationProvider(restTemplate, new StationEntityMapper(new PositionEntityMapper()));
+        stationProvider = new StationProvider(restTemplate, new StationEntityMapper(new PositionEntityMapper(),
+                new TotalStandsEntityMapper(new AvailabilitiesEntityMapper())));
         when(restTemplate.getForObject(anyString(), any())).thenReturn(givenJsonReturn);
 
-       List<Station> expectedList = List.of(
-                new Station(2010, new Position(4.815747, 45.743317)),
-                new Station(5015, new Position(4.821662,45.75197)),
-                new Station(32001, new Position(4.832409,45.846034)));
+        List<Station> expectedList = List.of(
+                new Station(2010, new Position(4.815747, 45.743317),
+                        new TotalStands(22, new Availabilities(15))),
+                new Station(5015, new Position(4.821662, 45.75197),
+                        new TotalStands(19, new Availabilities(12))),
+                new Station(32001, new Position(4.832409, 45.846034),
+                        new TotalStands(19, new Availabilities(12))));
 
         //when
         List<Station> result = stationProvider.getAllStations();
