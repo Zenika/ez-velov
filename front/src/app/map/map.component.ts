@@ -19,13 +19,23 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let map = new mapboxgl.Map({
-      style: "mapbox://styles/scorpion6912/cl2rcl9oe006i14o1hqa9s4n8",
-      accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
-      container: 'map',
-      center: [4.835659, 45.764043],
-      zoom: 12
-    });
+    let map = this.initMap();
+    this.initStations(map);
+    let geolocator = this.initGeolocator(map);
+    this.triggerGeolocator(map, geolocator);
+  }
+
+  private initMap(): mapboxgl.Map {
+    return new mapboxgl.Map({
+        style: "mapbox://styles/scorpion6912/cl2rcl9oe006i14o1hqa9s4n8",
+        accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
+        container: 'map',
+        center: [4.835659, 45.764043],
+        zoom: 12
+      });
+  }
+
+  private initStations(map: mapboxgl.Map): void {
 
     this.addPointsOnMap(map);
 
@@ -55,7 +65,6 @@ export class MapComponent implements OnInit {
   addPointsOnMap(map: mapboxgl.Map): void {
     this.stationService.getAllStations()
       .subscribe(stations => {
-        this.stations = stations
         stations.forEach((station) => {
           const {longitude, latitude} = station?.positionDto;
           const {capacity, availabilitiesDto} = station?.totalStandsDto;
@@ -69,6 +78,25 @@ export class MapComponent implements OnInit {
       });
   }
 
+  private initGeolocator(map: mapboxgl.Map): mapboxgl.GeolocateControl {
+    const geolocator = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+      showUserHeading: true,
+      showAccuracyCircle: true
+    })
+    map.addControl(geolocator);
+    return geolocator;
+  }
+
+  private triggerGeolocator(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
+    map.on('load', function() {
+      geolocator.trigger();
+    });
+  }
+  
   infosStations(capacity: number, placeDispo: number): string {
     return 'capacité : ' + capacity + '<br>' + 'places disponibles : ' + placeDispo
   }
