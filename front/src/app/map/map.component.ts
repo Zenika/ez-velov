@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
 import {StationService} from "../station.service";
 import {Station} from "../station";
+import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import {timer} from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -10,7 +13,10 @@ import {Station} from "../station";
 })
 export class MapComponent implements OnInit {
 
-  constructor(private stationService: StationService) { }
+  public stations?: Station[];
+
+  constructor(private stationService: StationService) {
+  }
 
   ngOnInit(): void {
     let map = this.initMap();
@@ -30,11 +36,44 @@ export class MapComponent implements OnInit {
   }
 
   private initStations(map: mapboxgl.Map): void {
+
+    this.addPointsOnMap(map);
+
+    this.addGeocoderOnMap(map);
+  }
+
+  addGeocoderOnMap(map: mapboxgl.Map): void {
+    const geocoder = new MapboxGeocoder({
+      accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
+      placeholder: 'Recherchez dans Lyon',
+      marker: false,
+      mapboxgl: map,
+      flyTo: true
+    });
+
+    document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
+
+    geocoder.on('result', (event) => {
+      let positionRecherche: mapboxgl.Marker;
+      timer(3000).subscribe(x => {
+        positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
+        positionRecherche.addTo(map)
+      })
+    });
+  }
+
+  addPointsOnMap(map: mapboxgl.Map): void {
     this.stationService.getAllStations()
       .subscribe(stations => {
         stations.forEach((station) => {
           const {longitude, latitude} = station?.positionDto;
-          new mapboxgl.Marker().setLngLat([longitude,latitude]).addTo(map)
+          const {capacity, availabilitiesDto} = station?.totalStandsDto;
+          new mapboxgl.Marker().setLngLat([longitude, latitude]).setPopup(
+            new mapboxgl.Popup({offset: [0, -15]}).setLngLat([longitude, latitude])
+              .setHTML(
+                this.infosStations(capacity, availabilitiesDto.stands))
+          ).addTo(map)
+
         })
       });
   }
@@ -56,5 +95,9 @@ export class MapComponent implements OnInit {
     map.on('load', function() {
       geolocator.trigger();
     });
+  }
+  
+  infosStations(capacity: number, placeDispo: number): string {
+    return 'capacité : ' + capacity + '<br>' + 'places disponibles : ' + placeDispo
   }
 }
