@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import * as mapboxgl from "mapbox-gl";
 import {StationService} from "../station.service";
-import {Station} from "../station";
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {timer} from 'rxjs';
@@ -13,7 +12,9 @@ import {timer} from 'rxjs';
 })
 export class MapComponent implements OnInit {
 
-  public stations?: Station[];
+  private static c = 0;
+  private static coordsstart: any;
+  private static coordsend: any;
 
   constructor(private stationService: StationService) {
   }
@@ -25,14 +26,99 @@ export class MapComponent implements OnInit {
     this.triggerGeolocator(map, geolocator);
   }
 
+
+  private drawTrajet(map: mapboxgl.Map, coords: any): void {
+    let bike = document.getElementById('bike') as HTMLInputElement | null
+    let walk = document.getElementById('walk') as HTMLInputElement | null
+    let time = document.getElementById('time')
+    let instructions = document.getElementById('instructions');
+    let apiCall: string;
+    removeRoute();
+
+    if (walk?.checked && bike?.checked) {
+      alert("veuillez ne choisir qu'un type de trajet a la fois puis recommencer");
+      apiCall = '';
+    } else if (walk?.checked && !bike?.checked) {
+      apiCall = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
+        + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
+        'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
+    } else {
+      apiCall = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
+        + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
+        'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
+    }
+    let xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.responseType = 'json';
+    xmlHttpRequest.open('GET', apiCall, true);
+    xmlHttpRequest.onload = function () {
+      let apiDirectionResponse = xmlHttpRequest.response;
+      let duration = apiDirectionResponse.routes[0].duration / 60;
+      let stepsOfRoad = apiDirectionResponse.routes[0].legs[0].steps;
+      let coords = apiDirectionResponse.routes[0].geometry;
+
+
+      stepsOfRoad.forEach(function (step: any) {
+        instructions!.insertAdjacentHTML('beforeend', '<p>'
+          + step.maneuver.instruction + '</p>');
+      });
+
+      time!.insertAdjacentHTML('beforeend', '<p>'
+        + ' <br>Duration: ' + duration.toFixed(2)
+        + ' minutes' + '</p>');
+
+      addRoute(coords);
+    };
+    xmlHttpRequest.send();
+
+    function addRoute(coords: any) {
+      if (map.getSource('route')) {
+        map.removeLayer('route');
+        map.removeSource('route')
+      } else {
+        map.addLayer({
+          "id": "route",
+          "type": "line",
+          "source": {
+            "type": "geojson",
+            "data": {
+              "type": "Feature",
+              "properties": {},
+              "geometry": coords
+            }
+          },
+          "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+          },
+          "paint": {
+            "line-color": "red",
+            "line-width": 8,
+            "line-opacity": 0.8
+          }
+        });
+      }
+    }
+
+    function removeRoute() {
+      if (map.getSource('route')) {
+        map.removeLayer('route');
+        map.removeSource('route');
+        instructions!.innerHTML = '';
+        time!.innerHTML = '';
+      } else {
+        return;
+      }
+    }
+  }
+
   private initMap(): mapboxgl.Map {
     return new mapboxgl.Map({
-        style: "mapbox://styles/scorpion6912/cl2rcl9oe006i14o1hqa9s4n8",
-        accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
-        container: 'map',
-        center: [4.835659, 45.764043],
-        zoom: 12
-      });
+      style: "mapbox://styles/scorpion6912/cl2rcl9oe006i14o1hqa9s4n8",
+      accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
+      container: 'map',
+      center: [4.835659, 45.764043],
+      zoom: 12
+    });
   }
 
   private initStations(map: mapboxgl.Map): void {
@@ -53,11 +139,26 @@ export class MapComponent implements OnInit {
 
     document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
 
-    geocoder.on('result', (event) => {
+    geocoder.on('result', () => {
+      let trajet = document.getElementById('trajet') as HTMLInputElement | null
       let positionRecherche: mapboxgl.Marker;
-      timer(3000).subscribe(x => {
+      timer(3000).subscribe(() => {
         positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
         positionRecherche.addTo(map)
+      })
+
+      timer(3000).subscribe(() => {
+        if (trajet?.checked) {
+          if (MapComponent.c == 1) {
+            MapComponent.coordsend = [map.getCenter().lng, map.getCenter().lat];
+            let newcoords = MapComponent.coordsstart?.toString() + ';' + MapComponent.coordsend?.toString();
+            this.drawTrajet(map, newcoords);
+          }
+          if (MapComponent.c == 0) {
+            MapComponent.c++;
+            MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
+          }
+        }
       })
     });
   }
@@ -92,11 +193,11 @@ export class MapComponent implements OnInit {
   }
 
   private triggerGeolocator(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
-    map.on('load', function() {
+    map.on('load', function () {
       geolocator.trigger();
     });
   }
-  
+
   infosStations(capacity: number, placeDispo: number): string {
     return 'capacité : ' + capacity + '<br>' + 'places disponibles : ' + placeDispo
   }
