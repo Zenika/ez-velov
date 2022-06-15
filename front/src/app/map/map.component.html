@@ -2,19 +2,26 @@
 
 <div id="geocoder" class="geocoder"></div>
 
+<div id="geocoderDest" class="geocoderDest"></div>
+
 <div id='instructions'></div>
 
 <div id='time'></div>
 
-<div id="box">
-  <input type="checkbox" id="trajet" name="trajet">
+<div id = "itineraire">
+  <input type="radio" id="trajet" name="trajet" checked>
   <label for="trajet"> Trouver un itinéraire </label>
 
-  <input type="checkbox" id="walk" name="walk">
+  <input type="radio" id="recherche" name="trajet" >
+  <label for="recherche"> recherche simple </label>
+</div>
+
+<div id="box">
+
+  <input type="radio" id="walk" name="choix">
   <label for="walk">a pied</label>
 
-  <input type="checkbox" id="bike" name="bike"
-         checked>
+  <input type="radio" id="bike" name="choix" checked>
   <label for="bike">a velo</label>
 
 </div>

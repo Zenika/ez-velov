@@ -13,7 +13,9 @@ import {timer} from 'rxjs';
 export class MapComponent implements OnInit {
 
   private static c = 0;
+
   private static coordsstart: any;
+
   private static coordsend: any;
 
   constructor(private stationService: StationService) {
@@ -125,19 +127,49 @@ export class MapComponent implements OnInit {
 
     this.addPointsOnMap(map);
 
-    this.addGeocoderOnMap(map);
+    this.addFirstGeocoderOnMap(map);
+
+    this.addSecondGeocoderOnMap(map);
   }
 
-  addGeocoderOnMap(map: mapboxgl.Map): void {
+  addSecondGeocoderOnMap(map: mapboxgl.Map): void {
+    const geocoderDest = new MapboxGeocoder({
+      accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
+      placeholder: 'Destination',
+      marker: false,
+      mapboxgl: map,
+      flyTo: true
+    });
+
+    document.getElementById('geocoderDest')?.appendChild(geocoderDest.onAdd(map));
+
+    geocoderDest.on('result', () => {
+      timer(3000).subscribe(() => {
+        let trajet = document.getElementById('trajet') as HTMLInputElement | null
+        if (trajet?.checked) {
+          MapComponent.c++;
+          new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
+          MapComponent.coordsend = [map.getCenter().lng, map.getCenter().lat];
+          let newcoords = MapComponent.coordsstart?.toString() + ';' + MapComponent.coordsend?.toString();
+          this.drawTrajet(map, newcoords);
+        }
+      })
+    })
+  }
+
+  addFirstGeocoderOnMap(map: mapboxgl.Map): void {
     const geocoder = new MapboxGeocoder({
       accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
-      placeholder: 'Recherchez dans Lyon',
+      placeholder: 'Depart - Ma position',
       marker: false,
       mapboxgl: map,
       flyTo: true
     });
 
     document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
+    timer(3500).subscribe(() => {
+      MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
+    })
 
     geocoder.on('result', () => {
       let trajet = document.getElementById('trajet') as HTMLInputElement | null
@@ -149,14 +181,10 @@ export class MapComponent implements OnInit {
 
       timer(3000).subscribe(() => {
         if (trajet?.checked) {
-          if (MapComponent.c == 1) {
-            MapComponent.coordsend = [map.getCenter().lng, map.getCenter().lat];
+          MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
+          if (MapComponent.c > 0) {
             let newcoords = MapComponent.coordsstart?.toString() + ';' + MapComponent.coordsend?.toString();
             this.drawTrajet(map, newcoords);
-          }
-          if (MapComponent.c == 0) {
-            MapComponent.c++;
-            MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
           }
         }
       })
