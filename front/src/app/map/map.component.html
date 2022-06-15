@@ -1,27 +1,43 @@
-<div id='map'></div>
+<main>
+  <div id='map'></div>
 
-<div id="geocoder" class="geocoder"></div>
+  <form>
+    <div class="donneesTrajet">
+      <div id="typeRecherche">
+        <input type="radio" id="trajet" name="trajet" checked>
+        <label for="trajet">Trouver un itinéraire</label>
 
-<div id="geocoderDest" class="geocoderDest"></div>
+        <input type="radio" id="recherche" name="trajet">
+        <label for="recherche">Recherche simple</label>
+      </div>
 
-<div id='instructions'></div>
+      <div id="choixTypeTrajet">
+        <input type="radio" id="walk" name="choix" value="walk" checked>
+        <label for="walk">A pied</label>
 
-<div id='time'></div>
+        <input type="radio" id="bike" name="choix" value="bike">
+        <label for="bike">A vélo</label>
+      </div>
 
-<div id = "itineraire">
-  <input type="radio" id="trajet" name="trajet" checked>
-  <label for="trajet"> Trouver un itinéraire </label>
+      <div class="rechercheDepart">
+        <div id="rechercheDepart" class="geocoder"></div>
+        <button id="buttonStart" type="button" title="Definir la position de depart sur ma position">
+          <img src="./assets/positionLogo.png">
+        </button>
+      </div>
 
-  <input type="radio" id="recherche" name="trajet" >
-  <label for="recherche"> recherche simple </label>
-</div>
+      <div class="rechercheDestination">
+        <div id="rechercheDestination" class="geocoderDest"></div>
+        <button id="buttonEnd" type="button" title="Definir la position de depart sur ma position">
+          <img src="./assets/positionLogo.png">
+        </button>
+      </div>
 
-<div id="box">
+      <div id='resultatTempsTrajet'></div>
+    </div>
+    <div class="resultatTrajet">
 
-  <input type="radio" id="walk" name="choix">
-  <label for="walk">a pied</label>
-
-  <input type="radio" id="bike" name="choix" checked>
-  <label for="bike">a velo</label>
-
-</div>
+      <div id='instructionsTrajet'></div>
+    </div>
+  </form>
+</main>

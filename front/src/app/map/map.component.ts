@@ -12,11 +12,11 @@ import {timer} from 'rxjs';
 })
 export class MapComponent implements OnInit {
 
-  private static c = 0;
+  private compteurRechercheDestination?: boolean;
 
-  private static coordsstart: any;
+  private  coordsStart?: number[];
 
-  private static coordsend: any;
+  private coordsEnd?: number[];
 
   constructor(private stationService: StationService) {
   }
@@ -26,32 +26,51 @@ export class MapComponent implements OnInit {
     this.initStations(map);
     let geolocator = this.initGeolocator(map);
     this.triggerGeolocator(map, geolocator);
+    this.setCoordsStartOrEndToPosition(map, geolocator);
   }
 
 
-  private drawTrajet(map: mapboxgl.Map, coords: any): void {
+  private setCoordsStartOrEndToPosition(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
+    let buttonStart = document.getElementById('buttonStart');
+    let buttonEnd = document.getElementById('buttonEnd');
+    buttonStart?.addEventListener('click', () => {
+      geolocator.trigger()
+      timer(2000).subscribe(() => {
+        this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
+      });
+    })
+    buttonEnd?.addEventListener('click', () => {
+      this.compteurRechercheDestination = true;
+      geolocator.trigger();
+      timer(2000).subscribe(() => {
+        this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
+      });
+    })
+  }
+
+  private drawTrajet(map: mapboxgl.Map, coords: string): void {
     let bike = document.getElementById('bike') as HTMLInputElement | null
     let walk = document.getElementById('walk') as HTMLInputElement | null
-    let time = document.getElementById('time')
-    let instructions = document.getElementById('instructions');
-    let apiCall: string;
+    let time = document.getElementById('resultatTempsTrajet')
+    let instructions = document.getElementById('instructionsTrajet');
+    let apiCallForTrajet: string;
     removeRoute();
 
     if (walk?.checked && bike?.checked) {
       alert("veuillez ne choisir qu'un type de trajet a la fois puis recommencer");
-      apiCall = '';
+      apiCallForTrajet = '';
     } else if (walk?.checked && !bike?.checked) {
-      apiCall = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
+      apiCallForTrajet = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
         + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
         'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
     } else {
-      apiCall = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
+      apiCallForTrajet = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
         + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
         'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
     }
     let xmlHttpRequest = new XMLHttpRequest();
     xmlHttpRequest.responseType = 'json';
-    xmlHttpRequest.open('GET', apiCall, true);
+    xmlHttpRequest.open('GET', apiCallForTrajet, true);
     xmlHttpRequest.onload = function () {
       let apiDirectionResponse = xmlHttpRequest.response;
       let duration = apiDirectionResponse.routes[0].duration / 60;
@@ -65,7 +84,7 @@ export class MapComponent implements OnInit {
       });
 
       time!.insertAdjacentHTML('beforeend', '<p>'
-        + ' <br>Duration: ' + duration.toFixed(2)
+        + ' Durée: ' + duration.toFixed(2)
         + ' minutes' + '</p>');
 
       addRoute(coords);
@@ -127,13 +146,13 @@ export class MapComponent implements OnInit {
 
     this.addPointsOnMap(map);
 
-    this.addFirstGeocoderOnMap(map);
+    this.initRechercheDepart(map);
 
-    this.addSecondGeocoderOnMap(map);
+    this.initRechercheDestination(map);
   }
 
-  addSecondGeocoderOnMap(map: mapboxgl.Map): void {
-    const geocoderDest = new MapboxGeocoder({
+  initRechercheDestination(map: mapboxgl.Map): void {
+    const rechercheDestination = new MapboxGeocoder({
       accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
       placeholder: 'Destination',
       marker: false,
@@ -141,37 +160,37 @@ export class MapComponent implements OnInit {
       flyTo: true
     });
 
-    document.getElementById('geocoderDest')?.appendChild(geocoderDest.onAdd(map));
+    document.getElementById('rechercheDestination')?.appendChild(rechercheDestination.onAdd(map));
 
-    geocoderDest.on('result', () => {
+    rechercheDestination.on('result', () => {
       timer(3000).subscribe(() => {
         let trajet = document.getElementById('trajet') as HTMLInputElement | null
         if (trajet?.checked) {
-          MapComponent.c++;
+          this.compteurRechercheDestination = true;
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
-          MapComponent.coordsend = [map.getCenter().lng, map.getCenter().lat];
-          let newcoords = MapComponent.coordsstart?.toString() + ';' + MapComponent.coordsend?.toString();
+          this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
+          let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
           this.drawTrajet(map, newcoords);
         }
       })
     })
   }
 
-  addFirstGeocoderOnMap(map: mapboxgl.Map): void {
-    const geocoder = new MapboxGeocoder({
+  initRechercheDepart(map: mapboxgl.Map): void {
+    const rechercheDepart = new MapboxGeocoder({
       accessToken: 'pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVoMXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg',
-      placeholder: 'Depart - Ma position',
+      placeholder: 'Départ',
       marker: false,
       mapboxgl: map,
       flyTo: true
     });
 
-    document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map));
+    document.getElementById('rechercheDepart')?.appendChild(rechercheDepart.onAdd(map));
     timer(3500).subscribe(() => {
-      MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
+      this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
     })
 
-    geocoder.on('result', () => {
+    rechercheDepart.on('result', () => {
       let trajet = document.getElementById('trajet') as HTMLInputElement | null
       let positionRecherche: mapboxgl.Marker;
       timer(3000).subscribe(() => {
@@ -181,9 +200,9 @@ export class MapComponent implements OnInit {
 
       timer(3000).subscribe(() => {
         if (trajet?.checked) {
-          MapComponent.coordsstart = [map.getCenter().lng, map.getCenter().lat];
-          if (MapComponent.c > 0) {
-            let newcoords = MapComponent.coordsstart?.toString() + ';' + MapComponent.coordsend?.toString();
+          this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
+          if (this.compteurRechercheDestination) {
+            let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
             this.drawTrajet(map, newcoords);
           }
         }

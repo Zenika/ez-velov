@@ -1,55 +1,97 @@
+main {
+  display: flex;
+  flex-direction: row-reverse;
+}
 #map {
   height: 95%;
   width: 45%;
   position: absolute;
   left: 8px;
 }
-
+form {
+  margin-top: 1em;
+  display: flex;
+}
+.donneesTrajet {
+  margin-top: 2em;
+}
+#typeRecherche {
+  margin-bottom: 0.5em;
+}
+.rechercheDepart {
+  display: flex;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+.rechercheDepart button {
+  height: 3em;
+  background: none;
+  border: none;
+}
+.rechercheDepart button img{
+  height: 3em;
+}
+.rechercheDestination {
+  display: flex;
+}
+.rechercheDestination button {
+  height: 3em;
+  background: none;
+  border: none;
+}
+.rechercheDestination button img{
+  height: 3em;
+}
+.resultatTrajet {
+  margin-right: 5em;
+  margin-left: 5em;
+}
+#instructionsTrajet {
+  margin-top: 2em;
+  height: 30em;
+  width: 20em;
+  overflow-y: auto;
+}
+#resultatTempsTrajet {
+  margin-top: 2em;
+  height: 3.5em;
+  width: 15em;
+  overflow-y: auto;
+}
+/*
 .geocoder {
-  position: absolute;
-  z-index: 1;
   width: 50%;
   left: 47%;
-  top: 9em;
+  top: 13em;
 }
+
 .geocoderDest {
-  position: absolute;
-  z-index: 1;
   width: 50%;
   left: 47%;
-  top: 12em;
+  top: 16em;
 }
-#instructions {
-  position:absolute;
-  height: 400px;
-  margin:20px;
-  width: 25%;
-  top:8em;
-  left:63.5em;
-  padding: 20px;
-  background-color: rgba(255,255,255,0.9);
-  overflow-y: scroll;
-  font-family: sans-serif;
-}
-#time {
-  position:absolute;
-  height: 50px;
-  margin:20px;
-  width: 15%;
-  top:17em;
-  left:43.5em;
-  background-color: rgba(255,255,255,0.9);
-  overflow-y: scroll;
-}
-#box {
-  position: absolute;
-  top: 17em;
+
+
+#choixTypeTrajet {
+  top: 11em;
   left: 44.5em;
   font-weight: bold;
 }
-#itineraire {
-  position: absolute;
-  top: 24em;
+
+#typeRecherche {
+  top: 9em;
   left: 44.5em;
   font-weight: bold;
 }
+
+.positionButton {
+  display: flex;
+  flex-direction: column;
+  top: 12.7em;
+  left: 61em;
+}
+
+.positionButton input {
+  height: 3.5em;
+}
+*/
