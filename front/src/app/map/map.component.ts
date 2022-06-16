@@ -31,26 +31,26 @@ export class MapComponent implements OnInit {
 
 
   private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
-    let buttonStart = document.getElementById('buttonStart');
-    let buttonEnd = document.getElementById('buttonEnd');
-    let confirmationAjoutPosition = document.getElementById('confirmationAjoutPosition');
-    buttonStart?.addEventListener('click', () => {
+    let buttonSetStartingPositionOnUser = document.getElementById('buttonSetStartingPositionOnUser');
+    let buttonSetEndingPositionOnUser = document.getElementById('buttonSetEndingPositionOnUser');
+    let confirmationSetPosition = document.getElementById('confirmationAjoutPosition');
+    buttonSetStartingPositionOnUser?.addEventListener('click', () => {
       geolocator.trigger()
       timer(2000).subscribe(() => {
         this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
-        confirmationAjoutPosition!.innerHTML = '';
-        confirmationAjoutPosition?.insertAdjacentHTML('beforeend', '<p>'
-          + 'Votre Position a bien été prise en compte comme depart' + '</p>');
+        confirmationSetPosition!.innerHTML = '';
+        confirmationSetPosition?.insertAdjacentHTML('beforeend', '<p>'
+          + 'Votre Position a bien été prise en compte comme départ' + '</p>');
       });
     })
-    buttonEnd?.addEventListener('click', () => {
+    buttonSetEndingPositionOnUser?.addEventListener('click', () => {
       this.compteurRechercheDestination = true;
       geolocator.trigger();
       timer(2000).subscribe(() => {
         this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
-        confirmationAjoutPosition!.innerHTML = '';
-        confirmationAjoutPosition?.insertAdjacentHTML('beforeend', '<p>'
-          + 'Votre Postion a bien été prise en compte comme destination' + '</p>');
+        confirmationSetPosition!.innerHTML = '';
+        confirmationSetPosition?.insertAdjacentHTML('beforeend', '<p>'
+          + 'Votre Position a bien été prise en compte comme destination' + '</p>');
       });
     })
   }
