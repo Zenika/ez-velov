@@ -4,32 +4,32 @@
   <form>
     <div class="donneesTrajet">
       <div id="typeRecherche">
-        <input type="radio" id="trajet" name="trajet" checked>
-        <label for="trajet">Trouver un itinéraire</label>
+        <input type="radio" id="rechercheTrajet" name="trajet" checked>
+        <label for="rechercheTrajet">Trouver un itinéraire</label>
 
-        <input type="radio" id="recherche" name="trajet">
-        <label for="recherche">Recherche simple</label>
+        <input type="radio" id="recherchePosition" name="position">
+        <label for="recherchePosition">Recherche simple</label>
       </div>
 
       <div id="choixTypeTrajet">
-        <input type="radio" id="walk" name="choix" value="walk" checked>
-        <label for="walk">A pied</label>
+        <input type="radio" id="choixWalk" name="choix" value="walk" checked>
+        <label for="choixWalk">A pied</label>
 
-        <input type="radio" id="bike" name="choix" value="bike">
-        <label for="bike">A vélo</label>
+        <input type="radio" id="choixBike" name="choix" value="bike">
+        <label for="choixBike">A vélo</label>
       </div>
 
       <div class="rechercheDepart">
-        <div id="rechercheDepart" class="geocoder"></div>
+        <div id="rechercheDepart"></div>
         <button id="buttonSetStartingPositionOnUser" type="button" title="Definir la position de depart sur ma position">
-          <img src="./assets/positionLogo.png">
+          <img src="./assets/positionLogo.png" alt="logoSetPosition">
         </button>
       </div>
 
       <div class="rechercheDestination">
-        <div id="rechercheDestination" class="geocoderDest"></div>
+        <div id="rechercheDestination"></div>
         <button id="buttonSetEndingPositionOnUser" type="button" title="Definir la position de destination sur ma position">
-          <img src="./assets/positionLogo.png">
+          <img src="./assets/positionLogo.png" alt="logoSetPosition">
         </button>
       </div>
 
@@ -37,9 +37,7 @@
 
       <div id='resultatTempsTrajet'></div>
     </div>
-    <div class="resultatTrajet">
 
-      <div id='instructionsTrajet'></div>
-    </div>
+    <div id='instructionsTrajet'></div>
   </form>
 </main>

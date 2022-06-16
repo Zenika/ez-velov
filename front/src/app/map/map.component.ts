@@ -12,7 +12,7 @@ import {timer} from 'rxjs';
 })
 export class MapComponent implements OnInit {
 
-  private compteurRechercheDestination?: boolean;
+  private rechercheDestination?: boolean;
 
   private  coordsStart?: number[];
 
@@ -24,18 +24,18 @@ export class MapComponent implements OnInit {
   ngOnInit(): void {
     let map = this.initMap();
     this.initStations(map);
-    let geolocator = this.initGeolocator(map);
-    this.triggerGeolocator(map, geolocator);
-    this.setCoordsOfStartOrEndToPosition(map, geolocator);
+    let geolocalisation = this.initGeolocation(map);
+    this.triggerGeolocation(map, geolocalisation);
+    this.setCoordsOfStartOrEndToPosition(map, geolocalisation);
   }
 
 
-  private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
+  private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
     let buttonSetStartingPositionOnUser = document.getElementById('buttonSetStartingPositionOnUser');
     let buttonSetEndingPositionOnUser = document.getElementById('buttonSetEndingPositionOnUser');
     let confirmationSetPosition = document.getElementById('confirmationAjoutPosition');
     buttonSetStartingPositionOnUser?.addEventListener('click', () => {
-      geolocator.trigger()
+      geolocalisation.trigger()
       timer(2000).subscribe(() => {
         this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
         confirmationSetPosition!.innerHTML = '';
@@ -44,8 +44,8 @@ export class MapComponent implements OnInit {
       });
     })
     buttonSetEndingPositionOnUser?.addEventListener('click', () => {
-      this.compteurRechercheDestination = true;
-      geolocator.trigger();
+      this.rechercheDestination = true;
+      geolocalisation.trigger();
       timer(2000).subscribe(() => {
         this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
         confirmationSetPosition!.innerHTML = '';
@@ -56,17 +56,17 @@ export class MapComponent implements OnInit {
   }
 
   private initRoute(map: mapboxgl.Map, coords: string): void {
-    let bike = document.getElementById('bike') as HTMLInputElement | null
-    let walk = document.getElementById('walk') as HTMLInputElement | null
+    let choixBike = document.getElementById('choixBike') as HTMLInputElement | null
+    let choixWalk = document.getElementById('choixWalk') as HTMLInputElement | null
     let time = document.getElementById('resultatTempsTrajet')
     let instructions = document.getElementById('instructionsTrajet');
     let apiCallForTrajet: string;
     removeRoute();
 
-    if (walk?.checked && bike?.checked) {
+    if (choixWalk?.checked && choixBike?.checked) {
       alert("veuillez ne choisir qu'un type de trajet a la fois puis recommencer");
       apiCallForTrajet = '';
-    } else if (walk?.checked && !bike?.checked) {
+    } else if (choixWalk?.checked && !choixBike?.checked) {
       apiCallForTrajet = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
         + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
         'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
@@ -171,9 +171,9 @@ export class MapComponent implements OnInit {
 
     rechercheDestination.on('result', () => {
       timer(3000).subscribe(() => {
-        let trajet = document.getElementById('trajet') as HTMLInputElement | null
-        if (trajet?.checked) {
-          this.compteurRechercheDestination = true;
+        let rechercheTrajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
+        if (rechercheTrajet?.checked) {
+          this.rechercheDestination = true;
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
           this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
           let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
@@ -208,7 +208,7 @@ export class MapComponent implements OnInit {
       timer(3000).subscribe(() => {
         if (trajet?.checked) {
           this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
-          if (this.compteurRechercheDestination) {
+          if (this.rechercheDestination) {
             let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
             this.initRoute(map, newcoords);
           }
@@ -233,8 +233,8 @@ export class MapComponent implements OnInit {
       });
   }
 
-  private initGeolocator(map: mapboxgl.Map): mapboxgl.GeolocateControl {
-    const geolocator = new mapboxgl.GeolocateControl({
+  private initGeolocation(map: mapboxgl.Map): mapboxgl.GeolocateControl {
+    const geolocalisation = new mapboxgl.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true,
       },
@@ -242,13 +242,13 @@ export class MapComponent implements OnInit {
       showUserHeading: true,
       showAccuracyCircle: true
     })
-    map.addControl(geolocator);
-    return geolocator;
+    map.addControl(geolocalisation);
+    return geolocalisation;
   }
 
-  private triggerGeolocator(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
+  private triggerGeolocation(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
     map.on('load', function () {
-      geolocator.trigger();
+      geolocalisation.trigger();
     });
   }
 
