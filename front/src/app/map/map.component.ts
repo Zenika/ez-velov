@@ -26,17 +26,21 @@ export class MapComponent implements OnInit {
     this.initStations(map);
     let geolocator = this.initGeolocator(map);
     this.triggerGeolocator(map, geolocator);
-    this.setCoordsStartOrEndToPosition(map, geolocator);
+    this.setCoordsOfStartOrEndToPosition(map, geolocator);
   }
 
 
-  private setCoordsStartOrEndToPosition(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
+  private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocator: mapboxgl.GeolocateControl): void {
     let buttonStart = document.getElementById('buttonStart');
     let buttonEnd = document.getElementById('buttonEnd');
+    let confirmationAjoutPosition = document.getElementById('confirmationAjoutPosition');
     buttonStart?.addEventListener('click', () => {
       geolocator.trigger()
       timer(2000).subscribe(() => {
         this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
+        confirmationAjoutPosition!.innerHTML = '';
+        confirmationAjoutPosition?.insertAdjacentHTML('beforeend', '<p>'
+          + 'Votre Position a bien été prise en compte comme depart' + '</p>');
       });
     })
     buttonEnd?.addEventListener('click', () => {
@@ -44,11 +48,14 @@ export class MapComponent implements OnInit {
       geolocator.trigger();
       timer(2000).subscribe(() => {
         this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
+        confirmationAjoutPosition!.innerHTML = '';
+        confirmationAjoutPosition?.insertAdjacentHTML('beforeend', '<p>'
+          + 'Votre Postion a bien été prise en compte comme destination' + '</p>');
       });
     })
   }
 
-  private drawTrajet(map: mapboxgl.Map, coords: string): void {
+  private initRoute(map: mapboxgl.Map, coords: string): void {
     let bike = document.getElementById('bike') as HTMLInputElement | null
     let walk = document.getElementById('walk') as HTMLInputElement | null
     let time = document.getElementById('resultatTempsTrajet')
@@ -87,11 +94,11 @@ export class MapComponent implements OnInit {
         + ' Durée: ' + duration.toFixed(2)
         + ' minutes' + '</p>');
 
-      addRoute(coords);
+      drawRoute(coords);
     };
     xmlHttpRequest.send();
 
-    function addRoute(coords: any) {
+    function drawRoute(coords: any) {
       if (map.getSource('route')) {
         map.removeLayer('route');
         map.removeSource('route')
@@ -170,7 +177,7 @@ export class MapComponent implements OnInit {
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
           this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
           let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
-          this.drawTrajet(map, newcoords);
+          this.initRoute(map, newcoords);
         }
       })
     })
@@ -203,7 +210,7 @@ export class MapComponent implements OnInit {
           this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
           if (this.compteurRechercheDestination) {
             let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
-            this.drawTrajet(map, newcoords);
+            this.initRoute(map, newcoords);
           }
         }
       })
