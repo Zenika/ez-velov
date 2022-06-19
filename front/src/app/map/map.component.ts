@@ -29,7 +29,6 @@ export class MapComponent implements OnInit {
     this.setCoordsOfStartOrEndToPosition(map, geolocalisation);
   }
 
-
   private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
     let buttonSetStartingPositionOnUser = document.getElementById('buttonSetStartingPositionOnUser');
     let buttonSetEndingPositionOnUser = document.getElementById('buttonSetEndingPositionOnUser');
@@ -198,14 +197,11 @@ export class MapComponent implements OnInit {
     })
 
     rechercheDepart.on('result', () => {
-      let trajet = document.getElementById('trajet') as HTMLInputElement | null
+      let trajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
       let positionRecherche: mapboxgl.Marker;
       timer(3000).subscribe(() => {
         positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
         positionRecherche.addTo(map)
-      })
-
-      timer(3000).subscribe(() => {
         if (trajet?.checked) {
           this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
           if (this.rechercheDestination) {
