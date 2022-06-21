@@ -3,39 +3,40 @@
 
   <form>
     <div class="donneesTrajet">
-      <div id="typeRecherche">
-        <input type="radio" id="rechercheTrajet" name="trajet" checked>
+      <div id="choixRecherche">
+<!--       TODO  Pk pas de value ?-->
+        <input type="radio" id="rechercheTrajet" name="rechercheTrajet" checked>
         <label for="rechercheTrajet">Trouver un itinéraire</label>
 
-        <input type="radio" id="recherchePosition" name="position">
+        <input type="radio" id="recherchePosition" name="recherchePosition">
         <label for="recherchePosition">Recherche simple</label>
       </div>
 
-      <div id="choixTypeTrajet">
-        <input type="radio" id="choixWalk" name="choix" value="walk" checked>
-        <label for="choixWalk">A pied</label>
+      <div id="choixTrajet">
+        <input type="radio" id="trajetAPied" name="trajetAPied" value="trajetAPied" checked>
+        <label for="trajetAPied">A pied</label>
 
-        <input type="radio" id="choixBike" name="choix" value="bike">
-        <label for="choixBike">A vélo</label>
+        <input type="radio" id="trajetAVelo" name="trajetAVelo" value="trajetAVelo">
+        <label for="trajetAVelo">A vélo</label>
       </div>
 
       <div class="rechercheDepart">
         <div id="rechercheDepart"></div>
-        <button id="buttonSetStartingPositionOnUser" type="button" title="Definir la position de depart sur ma position">
-          <img src="./assets/positionLogo.png" alt="logoSetPosition">
+        <button id="buttonSetStartingPosition" type="button" title="Définir la position de depart sur ma position">
+          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
 
       <div class="rechercheDestination">
         <div id="rechercheDestination"></div>
-        <button id="buttonSetEndingPositionOnUser" type="button" title="Definir la position de destination sur ma position">
-          <img src="./assets/positionLogo.png" alt="logoSetPosition">
+        <button id="buttonSetEndingPosition" type="button" title="Définir la position de destination sur ma position">
+          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
 
-      <div id="confirmationAjoutPosition"></div>
+      <div *ngIf=isPositionOk id="confirmationAjoutPosition">je confirme</div>
 
-      <div id='resultatTempsTrajet'></div>
+      <div id='tempsTrajet'></div>
     </div>
 
     <div id='instructionsTrajet'></div>

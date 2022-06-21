@@ -18,6 +18,10 @@ export class MapComponent implements OnInit {
 
   private coordsEnd?: number[];
 
+  private isPositionOk: boolean = false;
+
+  private static final timergeolocatlisation = 2000;
+
   constructor(private stationService: StationService) {
   }
 
@@ -35,7 +39,7 @@ export class MapComponent implements OnInit {
     let confirmationSetPosition = document.getElementById('confirmationAjoutPosition');
     buttonSetStartingPositionOnUser?.addEventListener('click', () => {
       geolocalisation.trigger()
-      timer(2000).subscribe(() => {
+      timer(this.timergeolocatlisation).subscribe(() => {
         this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
         confirmationSetPosition!.innerHTML = '';
         confirmationSetPosition?.insertAdjacentHTML('beforeend', '<p>'
@@ -45,12 +49,9 @@ export class MapComponent implements OnInit {
     buttonSetEndingPositionOnUser?.addEventListener('click', () => {
       this.rechercheDestination = true;
       geolocalisation.trigger();
-      timer(2000).subscribe(() => {
+      timer(this.timergeolocatlisation).subscribe(() => {
         this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
-        confirmationSetPosition!.innerHTML = '';
-        confirmationSetPosition?.insertAdjacentHTML('beforeend', '<p>'
-          + 'Votre Position a bien été prise en compte comme destination' + '</p>');
-      });
+        this.position = true;
     })
   }
 
