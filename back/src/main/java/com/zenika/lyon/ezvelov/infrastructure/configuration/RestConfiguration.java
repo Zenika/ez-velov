@@ -1,4 +1,4 @@
-package com.zenika.lyon.ezvelov.infrastructure.provider.configuration;
+package com.zenika.lyon.ezvelov.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
