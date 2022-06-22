@@ -1,3 +1,46 @@
-<div id='map'></div>
+<main>
+  <div id='map'></div>
 
-<div id="geocoder" class="geocoder"></div>
+  <form>
+    <div class="donneesTrajet">
+      <div id="choixRecherche">
+        <input type="radio" id="rechercheTrajet" name="rechercheTrajet" value="rechercheTrajet" checked>
+        <label for="rechercheTrajet">Trouver un itinéraire</label>
+
+        <input type="radio" id="recherchePosition" name="recherchePosition" value="recherchePosition">
+        <label for="recherchePosition">Recherche simple</label>
+      </div>
+
+      <div id="choixTrajet">
+        <input type="radio" id="trajetAPied" name="trajetAPied" value="trajetAPied" checked>
+        <label for="trajetAPied">A pied</label>
+
+        <input type="radio" id="trajetAVelo" name="trajetAVelo" value="trajetAVelo">
+        <label for="trajetAVelo">A vélo</label>
+      </div>
+
+      <div class="rechercheDepart">
+        <div id="rechercheDepart"></div>
+        <button id="boutonDefinirPositionDepart" type="button"
+                title="Définir la position de depart sur ma position"
+                (click)="this.setCoordsOfStartToPosition(this.map, this.geolocalisation)">
+          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
+        </button>
+      </div>
+
+      <div class="rechercheDestination">
+        <div id="rechercheDestination"></div>
+        <button id="boutonDefinirPositionDestination" type="button"
+                title="Définir la position de destination sur ma position"
+                (click)="this.setCoordsOfEndToPosition(this.map, this.geolocalisation)">
+          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
+        </button>
+      </div>
+
+      <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
+
+      <div *ngIf="addDuree" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
+    </div>
+    <div id='instructionsTrajet'>{{returnInstructionTrajet()}}</div>
+  </form>
+</main>

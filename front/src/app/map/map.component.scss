@@ -1,14 +1,66 @@
+main {
+  display: flex;
+  flex-direction: row-reverse;
+}
 #map {
   height: 95%;
   width: 45%;
   position: absolute;
   left: 8px;
+  top: 10em;
 }
-
-.geocoder {
-  position: absolute;
-  z-index: 1;
-  width: 50%;
-  left: 47%;
-  top: 9em;
+form {
+  margin-top: 1em;
+  display: flex;
+}
+.donneesTrajet {
+  margin-top: 2em;
+}
+#typeRecherche {
+  margin-bottom: 0.5em;
+}
+.rechercheDepart {
+  display: flex;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+.rechercheDepart button {
+  height: 3em;
+  background: none;
+  border: none;
+}
+.rechercheDepart button img{
+  height: 3em;
+}
+.rechercheDestination {
+  display: flex;
+}
+.rechercheDestination button {
+  height: 3em;
+  background: none;
+  border: none;
+}
+.rechercheDestination button img{
+  height: 3em;
+}
+#instructionsTrajet {
+  margin-right: 5em;
+  margin-left: 5em;
+  margin-top: 2em;
+  height: 30em;
+  width: 20em;
+  overflow-y: auto;
+}
+#tempsTrajet {
+  margin-top: 1em;
+  height: 3.5em;
+  width: 15em;
+  overflow-y: auto;
+  font-weight: bolder;
+}
+#confirmationAjoutPosition {
+  margin-top: 1em;
+  height: 4.5em;
+  width: 15em;
+  overflow-y: auto;
 }
