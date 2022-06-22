@@ -14,89 +14,97 @@ export class MapComponent implements OnInit {
 
   private rechercheDestination?: boolean;
 
-  private  coordsStart?: number[];
+  private coordsStart?: number[];
 
   private coordsEnd?: number[];
 
-  private isPositionOk: boolean = false;
+  public isPositionOk: boolean = false;
 
-  private static final timergeolocatlisation = 2000;
+  public addDuree: boolean = false;
+
+  public dureeTrajet!: string;
+
+  public instructionTrajet!: string;
+
+  public map!: mapboxgl.Map;
+
+  public geolocalisation!: mapboxgl.GeolocateControl;
+
+  private timerGeolocatlisation = 2000;
+
+  private timerFlyingMap = 3000;
 
   constructor(private stationService: StationService) {
   }
 
   ngOnInit(): void {
-    let map = this.initMap();
-    this.initStations(map);
-    let geolocalisation = this.initGeolocation(map);
-    this.triggerGeolocation(map, geolocalisation);
-    this.setCoordsOfStartOrEndToPosition(map, geolocalisation);
+    this.map = this.initMap();
+    this.initStations(this.map);
+    this.geolocalisation = this.initGeolocation(this.map);
+    this.triggerGeolocation(this.map, this.geolocalisation);
   }
 
-  private setCoordsOfStartOrEndToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
-    let buttonSetStartingPositionOnUser = document.getElementById('buttonSetStartingPositionOnUser');
-    let buttonSetEndingPositionOnUser = document.getElementById('buttonSetEndingPositionOnUser');
-    let confirmationSetPosition = document.getElementById('confirmationAjoutPosition');
-    buttonSetStartingPositionOnUser?.addEventListener('click', () => {
-      geolocalisation.trigger()
-      timer(this.timergeolocatlisation).subscribe(() => {
-        this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
-        confirmationSetPosition!.innerHTML = '';
-        confirmationSetPosition?.insertAdjacentHTML('beforeend', '<p>'
-          + 'Votre Position a bien été prise en compte comme départ' + '</p>');
-      });
-    })
-    buttonSetEndingPositionOnUser?.addEventListener('click', () => {
-      this.rechercheDestination = true;
-      geolocalisation.trigger();
-      timer(this.timergeolocatlisation).subscribe(() => {
-        this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
-        this.position = true;
-    })
+  public returnDureeTrajet(): string {
+    return this.dureeTrajet;
+  }
+
+  public returnInstructionTrajet(): string {
+    return this.instructionTrajet;
+  }
+
+  public setCoordsOfStartToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
+    geolocalisation.trigger();
+    timer(this.timerGeolocatlisation).subscribe(() => {
+      this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
+      this.isPositionOk = true;
+    });
+  }
+
+  public setCoordsOfEndToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
+    this.rechercheDestination = true;
+    geolocalisation.trigger();
+    timer(this.timerGeolocatlisation).subscribe(() => {
+      this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
+      this.isPositionOk = true;
+    });
   }
 
   private initRoute(map: mapboxgl.Map, coords: string): void {
-    let choixBike = document.getElementById('choixBike') as HTMLInputElement | null
-    let choixWalk = document.getElementById('choixWalk') as HTMLInputElement | null
-    let time = document.getElementById('resultatTempsTrajet')
-    let instructions = document.getElementById('instructionsTrajet');
-    let apiCallForTrajet: string;
+    let trajetAVelo = document.getElementById('trajetAVelo') as HTMLInputElement | null
+    let trajetAPied = document.getElementById('trajetAPied') as HTMLInputElement | null
+    let apiCallForRoute: string;
     removeRoute();
 
-    if (choixWalk?.checked && choixBike?.checked) {
-      alert("veuillez ne choisir qu'un type de trajet a la fois puis recommencer");
-      apiCallForTrajet = '';
-    } else if (choixWalk?.checked && !choixBike?.checked) {
-      apiCallForTrajet = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
+    if (trajetAPied?.checked && !trajetAVelo?.checked) {
+      apiCallForRoute = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
         + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
         'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
     } else {
-      apiCallForTrajet = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
+      apiCallForRoute = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
         + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
         'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
     }
     let xmlHttpRequest = new XMLHttpRequest();
     xmlHttpRequest.responseType = 'json';
-    xmlHttpRequest.open('GET', apiCallForTrajet, true);
-    xmlHttpRequest.onload = function () {
+    this.addDuree = true;
+    xmlHttpRequest.open('GET', apiCallForRoute, true);
+    xmlHttpRequest.onload = () => {
       let apiDirectionResponse = xmlHttpRequest.response;
       let duration = apiDirectionResponse.routes[0].duration / 60;
       let stepsOfRoad = apiDirectionResponse.routes[0].legs[0].steps;
       let coords = apiDirectionResponse.routes[0].geometry;
-
-
+      let instructionsTrajet = '';
       stepsOfRoad.forEach(function (step: any) {
-        instructions!.insertAdjacentHTML('beforeend', '<p>'
-          + step.maneuver.instruction + '</p>');
+        instructionsTrajet += step.maneuver.instruction;
       });
+      this.instructionTrajet = instructionsTrajet;
 
-      time!.insertAdjacentHTML('beforeend', '<p>'
-        + ' Durée: ' + duration.toFixed(2)
-        + ' minutes' + '</p>');
-
+      this.dureeTrajet = duration.toFixed(2)
       drawRoute(coords);
     };
     xmlHttpRequest.send();
+    this.returnDureeTrajet();
+    this.returnInstructionTrajet();
 
     function drawRoute(coords: any) {
       if (map.getSource('route')) {
@@ -131,8 +139,6 @@ export class MapComponent implements OnInit {
       if (map.getSource('route')) {
         map.removeLayer('route');
         map.removeSource('route');
-        instructions!.innerHTML = '';
-        time!.innerHTML = '';
       } else {
         return;
       }
@@ -170,7 +176,7 @@ export class MapComponent implements OnInit {
     document.getElementById('rechercheDestination')?.appendChild(rechercheDestination.onAdd(map));
 
     rechercheDestination.on('result', () => {
-      timer(3000).subscribe(() => {
+      timer(this.timerFlyingMap).subscribe(() => {
         let rechercheTrajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
         if (rechercheTrajet?.checked) {
           this.rechercheDestination = true;
@@ -200,7 +206,7 @@ export class MapComponent implements OnInit {
     rechercheDepart.on('result', () => {
       let trajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
       let positionRecherche: mapboxgl.Marker;
-      timer(3000).subscribe(() => {
+      timer(this.timerFlyingMap).subscribe(() => {
         positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
         positionRecherche.addTo(map)
         if (trajet?.checked) {

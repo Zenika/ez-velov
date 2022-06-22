@@ -4,11 +4,10 @@
   <form>
     <div class="donneesTrajet">
       <div id="choixRecherche">
-<!--       TODO  Pk pas de value ?-->
-        <input type="radio" id="rechercheTrajet" name="rechercheTrajet" checked>
+        <input type="radio" id="rechercheTrajet" name="rechercheTrajet" value="rechercheTrajet" checked>
         <label for="rechercheTrajet">Trouver un itinéraire</label>
 
-        <input type="radio" id="recherchePosition" name="recherchePosition">
+        <input type="radio" id="recherchePosition" name="recherchePosition" value="recherchePosition">
         <label for="recherchePosition">Recherche simple</label>
       </div>
 
@@ -22,23 +21,26 @@
 
       <div class="rechercheDepart">
         <div id="rechercheDepart"></div>
-        <button id="buttonSetStartingPosition" type="button" title="Définir la position de depart sur ma position">
+        <button id="boutonDefinirPositionDepart" type="button"
+                title="Définir la position de depart sur ma position"
+                (click)="this.setCoordsOfStartToPosition(this.map, this.geolocalisation)">
           <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
 
       <div class="rechercheDestination">
         <div id="rechercheDestination"></div>
-        <button id="buttonSetEndingPosition" type="button" title="Définir la position de destination sur ma position">
+        <button id="boutonDefinirPositionDestination" type="button"
+                title="Définir la position de destination sur ma position"
+                (click)="this.setCoordsOfEndToPosition(this.map, this.geolocalisation)">
           <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
 
-      <div *ngIf=isPositionOk id="confirmationAjoutPosition">je confirme</div>
+      <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
-      <div id='tempsTrajet'></div>
+      <div *ngIf="addDuree" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
     </div>
-
-    <div id='instructionsTrajet'></div>
+    <div id='instructionsTrajet'>{{returnInstructionTrajet()}}</div>
   </form>
 </main>
