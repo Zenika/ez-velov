@@ -103,8 +103,6 @@ export class MapComponent implements OnInit {
       drawRoute(coords);
     };
     xmlHttpRequest.send();
-    this.returnDureeTrajet();
-    this.returnInstructionTrajet();
 
     function drawRoute(coords: any) {
       if (map.getSource('route')) {
