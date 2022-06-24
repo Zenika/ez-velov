@@ -4,6 +4,7 @@ import {StationService} from "../station.service";
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import {timer} from 'rxjs';
+import {Position} from "../position";
 
 @Component({
   selector: 'app-map',
@@ -14,7 +15,7 @@ export class MapComponent implements OnInit {
 
   private rechercheDestination?: boolean;
 
-  private coordsStart?: number[];
+  private coordsStart!: Position;
 
   private coordsEnd?: number[];
 
@@ -30,9 +31,9 @@ export class MapComponent implements OnInit {
 
   public geolocalisation!: mapboxgl.GeolocateControl;
 
-  private timerGeolocatlisation = 2000;
+  private readonly TIMER_GEOLOCALISATION = 2000;
 
-  private timerFlyingMap = 3000;
+  private readonly TIMER_FLYING_MAP = 3000;
 
   constructor(private stationService: StationService) {
   }
@@ -52,10 +53,21 @@ export class MapComponent implements OnInit {
     return this.instructionTrajet;
   }
 
+  public affichageTrajetStationLaPlusProche(map: mapboxgl.Map): void {
+    this.stationService.findStationLaPlusProche(this.coordsStart).subscribe(station => {
+      this.coordsEnd = [station.positionDto.longitude, station.positionDto.latitude];
+      let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
+      this.initRoute(map, newcoords);
+    })
+  }
+
   public setCoordsOfStartToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
     geolocalisation.trigger();
-    timer(this.timerGeolocatlisation).subscribe(() => {
-      this.coordsStart = [map.getCenter().lng, map.getCenter().lat]
+    timer(this.TIMER_GEOLOCALISATION).subscribe(() => {
+      this.coordsStart = {
+        longitude: map.getCenter().lng,
+        latitude: map.getCenter().lat
+      }
       this.isPositionOk = true;
     });
   }
@@ -63,7 +75,7 @@ export class MapComponent implements OnInit {
   public setCoordsOfEndToPosition(map: mapboxgl.Map, geolocalisation: mapboxgl.GeolocateControl): void {
     this.rechercheDestination = true;
     geolocalisation.trigger();
-    timer(this.timerGeolocatlisation).subscribe(() => {
+    timer(this.TIMER_GEOLOCALISATION).subscribe(() => {
       this.coordsEnd = [map.getCenter().lng, map.getCenter().lat]
       this.isPositionOk = true;
     });
@@ -105,32 +117,27 @@ export class MapComponent implements OnInit {
     xmlHttpRequest.send();
 
     function drawRoute(coords: any) {
-      if (map.getSource('route')) {
-        map.removeLayer('route');
-        map.removeSource('route')
-      } else {
-        map.addLayer({
-          "id": "route",
-          "type": "line",
-          "source": {
-            "type": "geojson",
-            "data": {
-              "type": "Feature",
-              "properties": {},
-              "geometry": coords
-            }
-          },
-          "layout": {
-            "line-join": "round",
-            "line-cap": "round"
-          },
-          "paint": {
-            "line-color": "red",
-            "line-width": 8,
-            "line-opacity": 0.8
+      map.addLayer({
+        "id": "route",
+        "type": "line",
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": coords
           }
-        });
-      }
+        },
+        "layout": {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        "paint": {
+          "line-color": "red",
+          "line-width": 8,
+          "line-opacity": 0.8
+        }
+      });
     }
 
     function removeRoute() {
@@ -174,13 +181,13 @@ export class MapComponent implements OnInit {
     document.getElementById('rechercheDestination')?.appendChild(rechercheDestination.onAdd(map));
 
     rechercheDestination.on('result', () => {
-      timer(this.timerFlyingMap).subscribe(() => {
+      timer(this.TIMER_FLYING_MAP).subscribe(() => {
         let rechercheTrajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
         if (rechercheTrajet?.checked) {
           this.rechercheDestination = true;
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
           this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
-          let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
+          let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
           this.initRoute(map, newcoords);
         }
       })
@@ -197,20 +204,26 @@ export class MapComponent implements OnInit {
     });
 
     document.getElementById('rechercheDepart')?.appendChild(rechercheDepart.onAdd(map));
-    timer(3500).subscribe(() => {
-      this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
+    timer(this.TIMER_FLYING_MAP).subscribe(() => {
+      this.coordsStart = {
+        longitude: map.getCenter().lng,
+        latitude: map.getCenter().lat
+      }
     })
 
     rechercheDepart.on('result', () => {
       let trajet = document.getElementById('rechercheTrajet') as HTMLInputElement | null
       let positionRecherche: mapboxgl.Marker;
-      timer(this.timerFlyingMap).subscribe(() => {
+      timer(this.TIMER_FLYING_MAP).subscribe(() => {
         positionRecherche = new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat])
         positionRecherche.addTo(map)
         if (trajet?.checked) {
-          this.coordsStart = [map.getCenter().lng, map.getCenter().lat];
+          this.coordsStart = {
+            longitude: map.getCenter().lng,
+            latitude: map.getCenter().lat
+          }
           if (this.rechercheDestination) {
-            let newcoords = this.coordsStart?.toString() + ';' + this.coordsEnd?.toString();
+            let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
             this.initRoute(map, newcoords);
           }
         }
@@ -229,7 +242,6 @@ export class MapComponent implements OnInit {
               .setHTML(
                 this.infosStations(capacity, availabilitiesDto.stands))
           ).addTo(map)
-
         })
       });
   }

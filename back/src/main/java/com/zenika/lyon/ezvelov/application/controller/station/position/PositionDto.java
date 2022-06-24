@@ -1,4 +1,6 @@
 package com.zenika.lyon.ezvelov.application.controller.station.position;
 
-public record PositionDto(double longitude, double latitude) {
+import javax.validation.constraints.NotNull;
+
+public record PositionDto(@NotNull double longitude, @NotNull double latitude) {
 }

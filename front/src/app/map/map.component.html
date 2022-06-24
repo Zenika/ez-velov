@@ -37,6 +37,13 @@
         </button>
       </div>
 
+      <div class="findVelov">
+        <button id="trouverVelov" type="button"
+                title="Trouver la station de Velov la plus proche"
+                (click)="this.affichageTrajetStationLaPlusProche(this.map)"></button>
+        <label for="trouverVelov">Trouver un vélo</label>
+      </div>
+
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
       <div *ngIf="addDuree" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
