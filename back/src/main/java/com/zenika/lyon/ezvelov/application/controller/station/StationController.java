@@ -1,10 +1,11 @@
 package com.zenika.lyon.ezvelov.application.controller.station;
 
+import com.zenika.lyon.ezvelov.application.controller.station.position.PositionDto;
+import com.zenika.lyon.ezvelov.application.controller.station.position.PositionDtoMapper;
 import com.zenika.lyon.ezvelov.domain.station.StationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -15,9 +16,12 @@ public class StationController {
 
     private final StationDtoMapper stationDtoMapper;
 
-    public StationController(StationService stationService, StationDtoMapper stationDtoMapper) {
+    private final PositionDtoMapper positionDtoMapper;
+
+    public StationController(StationService stationService, StationDtoMapper stationDtoMapper, PositionDtoMapper positionDtoMapper) {
         this.stationService = stationService;
         this.stationDtoMapper = stationDtoMapper;
+        this.positionDtoMapper = positionDtoMapper;
     }
 
     @GetMapping
@@ -25,5 +29,11 @@ public class StationController {
         return stationService.getAllStations().stream()
                 .map(stationDtoMapper::stationToStationDto)
                 .toList();
+    }
+
+    @PostMapping("/proche")
+    public StationDto getStationLaPlusProche(@RequestBody @Valid PositionDto positionDto) {
+        return stationDtoMapper.stationToStationDto(
+                stationService.getStationLaPlusProche(positionDtoMapper.positionDtotoPosition(positionDto)));
     }
 }
