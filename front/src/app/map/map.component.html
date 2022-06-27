@@ -4,7 +4,7 @@
   <form>
     <div class="donneesTrajet">
       <div id="choixRecherche">
-        <input type="radio" id="rechercheTrajet" name="typeRechercje" value="rechercheTrajet" checked>
+        <input type="radio" id="rechercheTrajet" name="typeRecherche" value="rechercheTrajet" checked>
         <label for="rechercheTrajet">Trouver un itinéraire</label>
 
         <input type="radio" id="recherchePosition" name="typeRecherche" value="recherchePosition">
@@ -45,7 +45,7 @@
 
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
-      <div *ngIf="addDuree" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
+      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
     </div>
     <div id='instructionsTrajet'>{{returnInstructionTrajet()}}</div>
   </form>

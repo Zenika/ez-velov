@@ -21,7 +21,7 @@ export class MapComponent implements OnInit {
 
   public isPositionOk: boolean = false;
 
-  public addDuree: boolean = false;
+  public afficherDureeTrajet: boolean = false;
 
   public dureeTrajet!: string;
 
@@ -53,15 +53,10 @@ export class MapComponent implements OnInit {
     return this.instructionTrajet;
   }
 
-  private makeRoute(map: mapboxgl.Map): void {
-    let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
-    this.initRoute(map, newcoords);
-  }
-
   public affichageTrajetStationLaPlusProche(map: mapboxgl.Map): void {
     this.stationService.findStationLaPlusProche(this.coordsStart).subscribe(station => {
       this.coordsEnd = [station.positionDto.longitude, station.positionDto.latitude];
-      this.makeRoute(map);
+      this.creerRoute(map);
     })
   }
 
@@ -85,25 +80,29 @@ export class MapComponent implements OnInit {
     });
   }
 
-  private initRoute(map: mapboxgl.Map, coords: string): void {
-    let trajetAVelo = document.getElementById('trajetAVelo') as HTMLInputElement | null
-    let trajetAPied = document.getElementById('trajetAPied') as HTMLInputElement | null
-    let apiCallForRoute: string;
-    removeRoute();
+  private getCreateRouteUrl() {
+    const trajetAVelo = document.getElementById('trajetAVelo') as HTMLInputElement | null;
+    const trajetAPied = document.getElementById('trajetAPied') as HTMLInputElement | null;
+    const coords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
 
-    if (trajetAPied?.checked && !trajetAVelo?.checked) {
-      apiCallForRoute = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + coords
-        + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
-        'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
-    } else {
-      apiCallForRoute = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + coords
-        + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo' +
-        'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
-    }
+    const typeTrajet = trajetAPied?.checked && !trajetAVelo?.checked
+      ? 'walking/'
+      : 'cycling/';
+
+    return 'https://api.mapbox.com/directions/v5/mapbox/'
+      + typeTrajet
+      + coords
+      + '?geometries=geojson&steps=true&access_token=pk.eyJ1Ijoic2NvcnBpb242OTEyIiwiYSI6ImNsMmVo'
+      + 'MXFwbjAwbm0zaW1rdjUzcnRrZ2IifQ.bp5c4G0lq1UsWSRJbLnfVg';
+  }
+
+  private creerRoute(map: mapboxgl.Map): void {
+    removeRoute();
+    this.afficherDureeTrajet = true;
+
     let xmlHttpRequest = new XMLHttpRequest();
     xmlHttpRequest.responseType = 'json';
-    this.addDuree = true;
-    xmlHttpRequest.open('GET', apiCallForRoute, true);
+    xmlHttpRequest.open('GET', this.getCreateRouteUrl(), true);
     xmlHttpRequest.onload = () => {
       let apiDirectionResponse = xmlHttpRequest.response;
       let duration = apiDirectionResponse.routes[0].duration / 60;
@@ -148,8 +147,6 @@ export class MapComponent implements OnInit {
       if (map.getSource('route')) {
         map.removeLayer('route');
         map.removeSource('route');
-      } else {
-        return;
       }
     }
   }
@@ -191,7 +188,7 @@ export class MapComponent implements OnInit {
           this.rechercheDestination = true;
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
           this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
-          this.makeRoute(map);
+          this.creerRoute(map);
         }
       })
     })
@@ -226,7 +223,7 @@ export class MapComponent implements OnInit {
             latitude: map.getCenter().lat
           }
           if (this.rechercheDestination) {
-            this.makeRoute(map);
+            this.creerRoute(map);
           }
         }
       })
