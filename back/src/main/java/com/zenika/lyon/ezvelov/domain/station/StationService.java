@@ -3,6 +3,7 @@ package com.zenika.lyon.ezvelov.domain.station;
 import com.zenika.lyon.ezvelov.domain.station.position.Position;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,23 +20,16 @@ public class StationService {
     }
 
     public Station getStationLaPlusProche(Position position) {
-        Station stationLaPlusProche = null;
-        double longFinal = 0, latFinal = 0, lowerDistance = 100;
-        List<Station> listStation = iRequestStationStore.getAllStations();
-        for (Station station : listStation) {
-            double distanceBeetweenStationAndUser = Math.sqrt(Math.pow(station.position().longitude() - position.longitude(), 2)
-                    + Math.pow(station.position().latitude() - position.latitude(), 2));
-            if (distanceBeetweenStationAndUser < lowerDistance) {
-                lowerDistance = distanceBeetweenStationAndUser;
-                longFinal = station.position().longitude();
-                latFinal = station.position().longitude();
-            }
-        }
-        for (Station station : listStation) {
-            if (station.position().longitude() == longFinal && station.position().latitude() == latFinal) {
-                stationLaPlusProche = station;
-            }
-        }
-        return stationLaPlusProche;
+        return iRequestStationStore.getAllStations()
+                .stream()
+                .min(Comparator.comparing(station -> this.calculDistance(station.position(), position)))
+                .orElseThrow();
+    }
+
+    private double calculDistance(Position position1, Position position2) {
+        return Math.sqrt(
+                Math.pow(position1.longitude() - position2.longitude(), 2)
+                + Math.pow(position1.latitude() - position2.latitude(), 2)
+        );
     }
 }

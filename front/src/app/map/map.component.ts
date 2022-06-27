@@ -53,11 +53,15 @@ export class MapComponent implements OnInit {
     return this.instructionTrajet;
   }
 
+  private makeRoute(map: mapboxgl.Map): void {
+    let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
+    this.initRoute(map, newcoords);
+  }
+
   public affichageTrajetStationLaPlusProche(map: mapboxgl.Map): void {
     this.stationService.findStationLaPlusProche(this.coordsStart).subscribe(station => {
       this.coordsEnd = [station.positionDto.longitude, station.positionDto.latitude];
-      let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
-      this.initRoute(map, newcoords);
+      this.makeRoute(map);
     })
   }
 
@@ -187,8 +191,7 @@ export class MapComponent implements OnInit {
           this.rechercheDestination = true;
           new mapboxgl.Marker().setLngLat([map.getCenter().lng, map.getCenter().lat]).addTo(map);
           this.coordsEnd = [map.getCenter().lng, map.getCenter().lat];
-          let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
-          this.initRoute(map, newcoords);
+          this.makeRoute(map);
         }
       })
     })
@@ -223,8 +226,7 @@ export class MapComponent implements OnInit {
             latitude: map.getCenter().lat
           }
           if (this.rechercheDestination) {
-            let newcoords = this.coordsStart.longitude + ',' + this.coordsStart.latitude + ';' + this.coordsEnd;
-            this.initRoute(map, newcoords);
+            this.makeRoute(map);
           }
         }
       })

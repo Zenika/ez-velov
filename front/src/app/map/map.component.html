@@ -4,18 +4,18 @@
   <form>
     <div class="donneesTrajet">
       <div id="choixRecherche">
-        <input type="radio" id="rechercheTrajet" name="rechercheTrajet" value="rechercheTrajet" checked>
+        <input type="radio" id="rechercheTrajet" name="typeRechercje" value="rechercheTrajet" checked>
         <label for="rechercheTrajet">Trouver un itinéraire</label>
 
-        <input type="radio" id="recherchePosition" name="recherchePosition" value="recherchePosition">
+        <input type="radio" id="recherchePosition" name="typeRecherche" value="recherchePosition">
         <label for="recherchePosition">Recherche simple</label>
       </div>
 
       <div id="choixTrajet">
-        <input type="radio" id="trajetAPied" name="trajetAPied" value="trajetAPied" checked>
+        <input type="radio" id="trajetAPied" name="typeTrajet" value="trajetAPied" checked>
         <label for="trajetAPied">A pied</label>
 
-        <input type="radio" id="trajetAVelo" name="trajetAVelo" value="trajetAVelo">
+        <input type="radio" id="trajetAVelo" name="typeTrajet" value="trajetAVelo">
         <label for="trajetAVelo">A vélo</label>
       </div>
 
@@ -40,8 +40,7 @@
       <div class="findVelov">
         <button id="trouverVelov" type="button"
                 title="Trouver la station de Velov la plus proche"
-                (click)="this.affichageTrajetStationLaPlusProche(this.map)"></button>
-        <label for="trouverVelov">Trouver un vélo</label>
+                (click)="this.affichageTrajetStationLaPlusProche(this.map)">Trouver un Velov</button>
       </div>
 
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
