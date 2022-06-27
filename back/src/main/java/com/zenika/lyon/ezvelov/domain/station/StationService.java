@@ -23,7 +23,7 @@ public class StationService {
         return iRequestStationStore.getAllStations()
                 .stream()
                 .min(Comparator.comparing(station -> this.calculDistance(station.position(), position)))
-                .orElseThrow(() -> new NullPointerException("La Liste de station ne doit pas être vide"));
+                .orElseThrow(() -> new IllegalStateException("La Liste de station ne doit pas être vide"));
     }
 
     private double calculDistance(Position position1, Position position2) {
