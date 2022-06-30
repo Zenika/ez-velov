@@ -23,7 +23,7 @@
         <div id="rechercheDepart"></div>
         <button id="boutonDefinirPositionDepart" type="button"
                 title="Définir la position de depart sur ma position"
-                (click)="this.setCoordsOfStartToPosition(this.map, this.geolocalisation)">
+                (click)="this.setCoordsOfStartToPosition()">
           <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
@@ -32,7 +32,7 @@
         <div id="rechercheDestination"></div>
         <button id="boutonDefinirPositionDestination" type="button"
                 title="Définir la position de destination sur ma position"
-                (click)="this.setCoordsOfEndToPosition(this.map, this.geolocalisation)">
+                (click)="this.setCoordsOfEndToPosition()">
           <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
         </button>
       </div>
@@ -40,13 +40,13 @@
       <div class="findVelov">
         <button id="trouverVelov" type="button"
                 title="Trouver la station de Velov la plus proche"
-                (click)="this.affichageTrajetStationLaPlusProche(this.map)">Trouver un Velov</button>
+                (click)="this.affichageTrajetStationLaPlusProche()">Trouver un Velov</button>
       </div>
 
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
-      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{returnDureeTrajet()}} minutes</div>
+      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{this.dureeTrajet}} minutes</div>
     </div>
-    <div id='instructionsTrajet'>{{returnInstructionTrajet()}}</div>
+    <div id='instructionsTrajet'>{{this.instructionTrajet}}</div>
   </form>
 </main>
