@@ -19,34 +19,30 @@
         <label for="trajetAVelo">A vélo</label>
       </div>
 
-      <div class="rechercheDepart">
+      <div class="recherche">
         <div id="rechercheDepart"></div>
-        <button id="boutonDefinirPositionDepart" type="button"
-                title="Définir la position de depart sur ma position"
-                (click)="this.setCoordsOfStartToPosition()">
-          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
-        </button>
+        <app-focus-button (click)="this.setCoordsOfStartToPosition()" [id]="'rechercheDepart'"
+                          [class]="'rechercheDepart'"
+                          [title]="'Définir la position de départ sur ma position'"></app-focus-button>
       </div>
-
-      <div class="rechercheDestination">
+      <div class="recherche">
         <div id="rechercheDestination"></div>
-        <button id="boutonDefinirPositionDestination" type="button"
-                title="Définir la position de destination sur ma position"
-                (click)="this.setCoordsOfEndToPosition()">
-          <img src="./assets/positionLogo.png" alt="logoGeolocalisation">
-        </button>
+        <app-focus-button (click)="this.setCoordsOfEndToPosition()" [id]="'rechercheDestination'"
+                          [class]="'rechercheDestination'"
+                          [title]="'Définir la position de destination sur ma position'"></app-focus-button>
       </div>
 
       <div class="findVelov">
         <button id="trouverVelov" type="button"
                 title="Trouver la station de Velov la plus proche"
-                (click)="this.affichageTrajetStationLaPlusProche()">Trouver un Velov</button>
+                (click)="this.affichageTrajetStationLaPlusProche()">Trouver un Velov
+        </button>
       </div>
 
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
-      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{this.dureeTrajet}} minutes</div>
+      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{mapService.dureeTrajet}} minutes</div>
     </div>
-    <div id='instructionsTrajet'>{{this.instructionTrajet}}</div>
+    <div id='instructionsTrajet'>{{mapService.instructionTrajet}}</div>
   </form>
 </main>
