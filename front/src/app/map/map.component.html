@@ -41,8 +41,8 @@
 
       <div *ngIf=isPositionOk id="confirmationAjoutPosition">Votre position a bien été prise en compte</div>
 
-      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{mapService.dureeTrajet}} minutes</div>
+      <div *ngIf="afficherDureeTrajet" id='tempsTrajet'>la durée du trajet est de {{this.dureeTrajet}} minutes</div>
     </div>
-    <div id='instructionsTrajet'>{{mapService.instructionTrajet}}</div>
+    <div id='instructionsTrajet'>{{this.instructionTrajet}}</div>
   </form>
 </main>
