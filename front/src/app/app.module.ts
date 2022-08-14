@@ -6,12 +6,14 @@ import {WelcomeComponent} from './welcome/welcome.component';
 import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {MapComponent} from "./map/map.component";
+import { FocusButtonComponent } from './focus-button/focus-button.component';
 
 @NgModule({
   declarations: [
     MapComponent,
     AppComponent,
     WelcomeComponent,
+    FocusButtonComponent,
   ],
   imports: [
     BrowserModule,

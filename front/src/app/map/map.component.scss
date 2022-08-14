@@ -2,6 +2,7 @@ main {
   display: flex;
   flex-direction: row-reverse;
 }
+
 #map {
   height: 95%;
   width: 45%;
@@ -9,44 +10,30 @@ main {
   left: 8px;
   top: 10em;
 }
+
 form {
   margin-top: 1em;
   display: flex;
 }
+
 .donneesTrajet {
   margin-top: 2em;
 }
+
 #typeRecherche {
   margin-bottom: 0.5em;
 }
-.rechercheDepart {
+
+.recherche {
   display: flex;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  align-items: center;
 }
-.rechercheDepart button {
-  height: 3em;
-  background: none;
-  border: none;
-}
-.rechercheDepart button img{
-  height: 3em;
-}
-.rechercheDestination {
-  display: flex;
-}
-.rechercheDestination button {
-  height: 3em;
-  background: none;
-  border: none;
-}
-.rechercheDestination button img{
-  height: 3em;
-}
+
 .findVelov button {
   height: 2em;
   margin-top: 1em;
 }
+
 #instructionsTrajet {
   margin-right: 5em;
   margin-left: 5em;
@@ -55,6 +42,7 @@ form {
   width: 20em;
   overflow-y: auto;
 }
+
 #tempsTrajet {
   margin-top: 1em;
   height: 3.5em;
@@ -62,6 +50,7 @@ form {
   overflow-y: auto;
   font-weight: bolder;
 }
+
 #confirmationAjoutPosition {
   margin-top: 1em;
   height: 4.5em;
